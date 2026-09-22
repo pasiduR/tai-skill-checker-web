@@ -1,0 +1,81 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap");
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #0a0b0d;
+  background: #ffffff;
+  font-synthesis: none;
+  --radius: 0.75rem;
+  --background: #ffffff;
+  --foreground: #0a0b0d;
+  --card: #ffffff;
+  --card-foreground: #0a0b0d;
+  --popover: #ffffff;
+  --popover-foreground: #0a0b0d;
+  --primary: #fa6619;
+  --primary-foreground: #0a0b0d;
+  --secondary: #eef0f3;
+  --secondary-foreground: #0a0b0d;
+  --muted: #f7f7f7;
+  --muted-foreground: #5b616e;
+  --accent: #eef0f3;
+  --accent-foreground: #0a0b0d;
+  --destructive: #cf202f;
+  --destructive-foreground: #ffffff;
+  --border: #dee1e6;
+  --input: #dee1e6;
+  --ring: #fa6619;
+  --brand-soft: #fff3ec;
+  --surface-dark: #0a0b0d;
+  --surface-dark-elevated: #16181c;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-brand-soft: var(--brand-soft);
+  --color-surface-dark: var(--surface-dark);
+  --color-surface-dark-elevated: var(--surface-dark-elevated);
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+}
+
+@layer base {
+  * { @apply border-border outline-ring/50; }
+  html { background: #fff; }
+  body { @apply bg-background text-foreground antialiased; margin: 0; min-width: 320px; min-height: 100vh; }
+  button, a, input, textarea, select { @apply focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary; }
+  h1, h2, h3 { text-wrap: balance; }
+  select { min-height: 3rem; border-radius: 0.75rem; border-color: #dee1e6; padding-inline: 1rem; background: #fff; }
+  ::selection { background: #fa6619; color: #0a0b0d; }
+}
+
+@layer utilities {
+  .font-display { font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-weight: 400; letter-spacing: -0.035em; }
+  .font-mono { font-family: "JetBrains Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+  .page-shell { width: 100%; max-width: 1200px; margin-inline: auto; padding-inline: clamp(1rem, 3vw, 3rem); }
+  .eyebrow { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: #7c828a; }
+}

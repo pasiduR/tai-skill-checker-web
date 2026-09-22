@@ -1,0 +1,5 @@
+export { AdminDashboard } from "./components/AdminDashboard"
+export { AssessmentsPage } from "./components/AssessmentsPage"
+export { NewAssessmentPage } from "./components/NewAssessmentPage"
+export { AssessmentDetailPage } from "./components/AssessmentDetailPage"
+export { AssessmentEditorPage } from "./components/AssessmentEditorPage"
