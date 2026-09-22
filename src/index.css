@@ -79,3 +79,16 @@
   .page-shell { width: 100%; max-width: 1200px; margin-inline: auto; padding-inline: clamp(1rem, 3vw, 3rem); }
   .eyebrow { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: #7c828a; }
 }
+
+.session-visualizer .lk-audio-bar {
+  width: 0.45rem;
+  min-height: 0.5rem;
+  border-radius: 9999px;
+  background: #5b616e;
+  transition: height 120ms ease, background-color 120ms ease;
+}
+
+.session-visualizer .lk-audio-bar.lk-highlighted,
+.session-visualizer .lk-audio-bar[data-lk-highlighted="true"] {
+  background: #fa6619;
+}

@@ -1,10 +1,15 @@
+import { lazy, Suspense } from "react"
 import { Navigate, createBrowserRouter } from "react-router-dom"
 import { AdminDashboard, AssessmentDetailPage, AssessmentEditorPage, AssessmentsPage, NewAssessmentPage } from "@/features/assessments"
+import { CompletedPage, PreparationPage } from "@/features/assignments"
 import { EmployeeHome, OrganizationSetupPage, RequireRole, SignInPage, useAuth } from "@/features/auth"
-import { InvitePage } from "@/features/invitations"
+import { InvitationEntryPage, InvitePage } from "@/features/invitations"
+import { PageSkeleton } from "@/components/shared/AsyncState"
 import { AdminLayout } from "@/layouts/AdminLayout"
 import { EmployeeLayout } from "@/layouts/EmployeeLayout"
 import { homePathForRole } from "@/features/auth/routing"
+
+const AssessmentSessionPage = lazy(() => import("@/features/liveAssessment").then((module) => ({ default: module.AssessmentSessionPage })))
 
 function HomeRedirect() {
   const auth = useAuth()
@@ -21,6 +26,8 @@ export const router = createBrowserRouter([
   { path: "/", element: <HomeRedirect /> },
   { path: "/sign-in", element: <SignInPage /> },
   { path: "/setup", element: <OrganizationSetupPage /> },
+  { path: "/invite/:token", element: <InvitationEntryPage /> },
+  { path: "/invitations/:token", element: <InvitationEntryPage /> },
   { element: <RequireRole role="ADMIN" />, children: [{ element: <AdminLayout />, children: [
     { path: "/admin", element: <AdminDashboard /> },
     { path: "/admin/assessments", element: <AssessmentsPage /> },
@@ -29,6 +36,11 @@ export const router = createBrowserRouter([
     { path: "/admin/assessments/:id/edit", element: <AssessmentEditorPage /> },
     { path: "/admin/assessments/:id/invite", element: <InvitePage /> },
   ] }] },
-  { element: <RequireRole role="EMPLOYEE" />, children: [{ element: <EmployeeLayout />, children: [{ path: "/employee", element: <EmployeeHome /> }] }] },
+  { element: <RequireRole role="EMPLOYEE" />, children: [{ element: <EmployeeLayout />, children: [
+    { path: "/employee", element: <EmployeeHome /> },
+    { path: "/assessment/:assignmentId/prepare", element: <PreparationPage /> },
+    { path: "/assessment/:assignmentId/session", element: <Suspense fallback={<PageSkeleton />}><AssessmentSessionPage /></Suspense> },
+    { path: "/assessment/:assignmentId/completed", element: <CompletedPage /> },
+  ] }] },
   { path: "*", element: <NotFound /> },
 ])

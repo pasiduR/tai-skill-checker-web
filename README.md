@@ -1,6 +1,6 @@
 # TAI Skill Checker Frontend
 
-React frontend for the admin assessment creation workflow.
+React frontend for the admin assessment workflow and employee realtime voice assessment journey.
 
 ## Run locally
 
@@ -24,3 +24,5 @@ npm run build
 ```
 
 Phase One includes session-aware role routing, the admin shell, assessment list/detail pages, manual and AI-assisted draft editing, PDF upload and processing, publishing, and bulk invitation delivery status.
+
+Phase Two adds invitation acceptance, employee preparation and microphone checks, server-authorized LiveKit room entry, explicit realtime session states, live transcription, interruption handling, and a locked completion screen.
