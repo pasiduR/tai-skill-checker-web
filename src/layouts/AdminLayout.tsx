@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { LayoutDashboard, LogOut, PanelsTopLeft } from "lucide-react"
+import { Activity, LayoutDashboard, LogOut, PanelsTopLeft } from "lucide-react"
 import { NavLink, Outlet, useNavigate } from "react-router-dom"
 import { queryKeys } from "@/api"
 import { BrandMark } from "@/components/shared/BrandMark"
@@ -19,7 +19,7 @@ export function AdminLayout() {
       <div className="flex items-center gap-3"><span className="hidden text-sm text-muted-foreground md:inline">{auth.session?.user.email}</span><Button size="sm" variant="secondary" disabled={logout.isPending} onClick={() => logout.mutate()}><LogOut />Sign out</Button></div>
     </div></header>
     <div className="page-shell grid md:grid-cols-[210px_1fr]">
-      <aside className="border-b py-4 md:min-h-[calc(100vh-4rem)] md:border-b-0 md:border-r md:py-8 md:pr-6"><p className="eyebrow mb-3 hidden md:block">Workspace</p><nav className="flex gap-2 md:flex-col"><NavLink end to="/admin" className={navClass}><LayoutDashboard />Overview</NavLink><NavLink to="/admin/assessments" className={navClass}><PanelsTopLeft />Assessments</NavLink></nav></aside>
+      <aside className="border-b py-4 md:min-h-[calc(100vh-4rem)] md:border-b-0 md:border-r md:py-8 md:pr-6"><p className="eyebrow mb-3 hidden md:block">Workspace</p><nav className="flex gap-2 overflow-x-auto md:flex-col"><NavLink end to="/admin" className={navClass}><LayoutDashboard />Overview</NavLink><NavLink to="/admin/assessments" className={navClass}><PanelsTopLeft />Assessments</NavLink><NavLink to="/admin/live" className={navClass}><Activity />Live</NavLink></nav></aside>
       <main className="min-w-0 py-8 md:pl-8 lg:py-12 lg:pl-12"><Outlet /></main>
     </div>
   </div>

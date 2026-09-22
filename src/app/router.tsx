@@ -8,6 +8,8 @@ import { PageSkeleton } from "@/components/shared/AsyncState"
 import { AdminLayout } from "@/layouts/AdminLayout"
 import { EmployeeLayout } from "@/layouts/EmployeeLayout"
 import { homePathForRole } from "@/features/auth/routing"
+import { LiveAttemptPage, LiveAttemptsPage } from "@/features/liveInspection"
+import { AttemptReportPage } from "@/features/reports"
 
 const AssessmentSessionPage = lazy(() => import("@/features/liveAssessment").then((module) => ({ default: module.AssessmentSessionPage })))
 
@@ -35,6 +37,9 @@ export const router = createBrowserRouter([
     { path: "/admin/assessments/:id", element: <AssessmentDetailPage /> },
     { path: "/admin/assessments/:id/edit", element: <AssessmentEditorPage /> },
     { path: "/admin/assessments/:id/invite", element: <InvitePage /> },
+    { path: "/admin/live", element: <LiveAttemptsPage /> },
+    { path: "/admin/live/:attemptId", element: <LiveAttemptPage /> },
+    { path: "/admin/attempts/:attemptId", element: <AttemptReportPage /> },
   ] }] },
   { element: <RequireRole role="EMPLOYEE" />, children: [{ element: <EmployeeLayout />, children: [
     { path: "/employee", element: <EmployeeHome /> },

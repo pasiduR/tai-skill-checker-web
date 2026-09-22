@@ -1,12 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { ArrowRight, CalendarClock, CheckCircle2, LockKeyhole } from "lucide-react"
+import { ArrowRight, CalendarClock, CheckCircle2, LockKeyhole, LogOut } from "lucide-react"
 import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom"
 import { queryKeys } from "@/api"
 import { BrandMark } from "@/components/shared/BrandMark"
 import { ErrorNotice, PageSkeleton } from "@/components/shared/AsyncState"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
-import { useAuth } from "@/features/auth"
+import { signOut, useAuth } from "@/features/auth"
 import { acceptInvitation, getInvitation } from "../api/invitations"
+import { matchesInvitationEmail } from "../invitationAccess"
 
 export function InvitationEntryPage() {
   const { token = "" } = useParams()
@@ -22,6 +24,13 @@ export function InvitationEntryPage() {
       navigate(`/assessment/${assignment.id}/prepare`, { replace: true, state: { invitation: invitation.data } })
     },
   })
+  const switchAccount = useMutation({
+    mutationFn: signOut,
+    onSuccess: () => {
+      queryClient.clear()
+      navigate("/sign-in", { replace: true, state: { from: location.pathname } })
+    },
+  })
 
   if (!token) return <Navigate to="/" replace />
   if (invitation.isLoading) return <main className="page-shell py-16"><PageSkeleton /></main>
@@ -31,12 +40,13 @@ export function InvitationEntryPage() {
   }
 
   const data = invitation.data
+  const wrongAccount = Boolean(auth.session && !matchesInvitationEmail(auth.session.user.email, data.email))
   const continueToAssessment = () => {
     if (!auth.session) {
       navigate("/sign-in", { state: { from: location.pathname } })
       return
     }
-    accept.mutate()
+    if (!wrongAccount) accept.mutate()
   }
 
   return <main className="min-h-screen bg-[#f7f7f7] px-5 py-8 sm:px-8 sm:py-14">
@@ -54,11 +64,15 @@ export function InvitationEntryPage() {
             <div className="flex items-start gap-3"><CalendarClock className="mt-0.5 size-5 shrink-0 text-primary" /><p>Invitation expires {new Date(data.expiresAt).toLocaleString()}</p></div>
             <div className="flex items-start gap-3"><LockKeyhole className="mt-0.5 size-5 shrink-0 text-primary" /><p>Your scenarios, evaluator guidance, and results stay private.</p></div>
           </div>
-          <Button size="lg" onClick={continueToAssessment} disabled={auth.isLoading || accept.isPending}>
+          {wrongAccount ? <Button size="lg" onClick={() => switchAccount.mutate()} disabled={switchAccount.isPending}>
+            <LogOut />{switchAccount.isPending ? "Signing out…" : "Switch account"}
+          </Button> : <Button size="lg" onClick={continueToAssessment} disabled={auth.isLoading || accept.isPending}>
             {accept.isPending ? "Accepting…" : auth.session ? "Accept invitation" : "Sign in to continue"}<ArrowRight />
-          </Button>
+          </Button>}
         </div>
-        {accept.error && <div className="px-6 pb-8 sm:px-10"><ErrorNotice message={accept.error.message} /></div>}
+        {wrongAccount && <div className="px-6 pb-8 sm:px-10"><Alert><AlertTitle>Use the invited account</AlertTitle><AlertDescription>You are signed in as {auth.session?.user.email}. Switch accounts and sign in as {data.email} to accept this invitation.</AlertDescription></Alert></div>}
+        {switchAccount.error && <div className="px-6 pb-8 sm:px-10"><ErrorNotice message="We could not sign you out. Refresh the page and try again." /></div>}
+        {!wrongAccount && accept.error && <div className="px-6 pb-8 sm:px-10"><ErrorNotice message={accept.error.message} /></div>}
       </section>
     </div>
   </main>
