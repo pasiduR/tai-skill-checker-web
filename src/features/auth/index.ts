@@ -1,6 +1,7 @@
 export { RequireRole } from "./components/RequireRole"
 export { SignInPage } from "./components/SignInPage"
+export { EmployeeSignInPage } from "./components/EmployeeSignInPage"
 export { EmployeeHome } from "./components/EmployeeHome"
-export { OrganizationSetupPage } from "./components/OrganizationSetupPage"
+export { AccessPendingPage } from "./components/AccessPendingPage"
 export { useAuth } from "./hooks/useAuth"
 export { signOut } from "./api/auth"

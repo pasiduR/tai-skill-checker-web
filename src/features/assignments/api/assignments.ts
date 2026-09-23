@@ -1,5 +1,9 @@
 import { api } from "@/api"
-import type { AssignmentPreparation, StartedAttempt } from "../types"
+import type { AssignmentPreparation, EmployeeAssignmentSummary, StartedAttempt } from "../types"
+
+export async function listEmployeeAssignments() {
+  return (await api.get<{ data: EmployeeAssignmentSummary[] }>("/api/assignments")).data
+}
 
 export async function getAssignmentPreparation(assignmentId: string) {
   return (await api.get<{ data: AssignmentPreparation }>(`/api/assignments/${assignmentId}/preparation`)).data

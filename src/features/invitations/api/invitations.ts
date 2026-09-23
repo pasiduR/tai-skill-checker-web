@@ -46,3 +46,7 @@ export async function getInvitation(token: string) {
 export async function acceptInvitation(token: string) {
   return (await api.post<undefined, { data: AcceptedInvitation }>(`/api/invitations/${encodeURIComponent(token)}/accept`)).data
 }
+
+export async function requestInvitationSignIn(token: string) {
+  return (await api.post<undefined, { data: { sent: true } }>(`/api/invitations/${encodeURIComponent(token)}/sign-in`)).data
+}

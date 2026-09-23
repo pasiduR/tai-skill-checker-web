@@ -44,16 +44,15 @@ export function SignInPage() {
     <section className="flex min-h-screen min-w-0 flex-col overflow-hidden bg-white px-6 py-8 sm:px-12 lg:justify-center lg:px-16 xl:px-24">
       <div className="mb-16 lg:hidden"><BrandMark /></div>
       <div className="mx-auto w-full min-w-0 max-w-md">
-        <p className="eyebrow">Secure workspace</p>
+        <p className="eyebrow">Administrator access</p>
         <h2 className="font-display mt-3 text-4xl leading-tight sm:text-5xl">Welcome back.</h2>
-        <p className="mt-4 text-base leading-7 text-muted-foreground">Sign in with your organization account to continue.</p>
+        <p className="mt-4 text-base leading-7 text-muted-foreground">Sign in with the administrator credentials configured for this workspace.</p>
         <form className="mt-10 space-y-6" onSubmit={form.handleSubmit((values) => mutation.mutate(values))}>
           <div className="space-y-2"><Label htmlFor="email">Email address</Label><Input id="email" type="email" autoComplete="email" placeholder="you@company.com" {...form.register("email")} />{form.formState.errors.email && <p className="text-sm text-destructive">{form.formState.errors.email.message}</p>}</div>
           <div className="space-y-2"><Label htmlFor="password">Password</Label><Input id="password" type="password" autoComplete="current-password" placeholder="At least 8 characters" {...form.register("password")} />{form.formState.errors.password && <p className="text-sm text-destructive">{form.formState.errors.password.message}</p>}</div>
           {mutation.error && <p className="text-sm text-destructive" role="alert">{mutation.error.message}</p>}
           <Button size="lg" className="w-full" disabled={mutation.isPending}>{mutation.isPending ? "Signing in…" : "Sign in"}</Button>
         </form>
-        <p className="mt-8 text-center text-xs leading-5 text-muted-foreground">Access is managed by your organization administrator.</p>
       </div>
     </section>
   </main>

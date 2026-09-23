@@ -11,7 +11,7 @@ export function AdminLayout() {
   const auth = useAuth()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
-  const logout = useMutation({ mutationFn: signOut, onSuccess: async () => { queryClient.clear(); await queryClient.invalidateQueries({ queryKey: queryKeys.session }); navigate("/sign-in") } })
+  const logout = useMutation({ mutationFn: signOut, onSuccess: async () => { queryClient.clear(); await queryClient.invalidateQueries({ queryKey: queryKeys.session }); navigate("/admin/sign-in") } })
   const navClass = ({ isActive }: { isActive: boolean }) => cn("flex min-h-11 items-center gap-2 rounded-full px-4 text-sm font-medium transition-colors", isActive ? "bg-[#0a0b0d] text-white" : "text-[#5b616e] hover:bg-[#eef0f3] hover:text-[#0a0b0d]")
   return <div className="min-h-screen bg-white">
     <header className="sticky top-0 z-20 border-b bg-white/95 backdrop-blur"><div className="page-shell flex h-16 items-center justify-between">

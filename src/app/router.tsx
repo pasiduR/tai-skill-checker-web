@@ -2,7 +2,7 @@ import { lazy, Suspense } from "react"
 import { Navigate, createBrowserRouter } from "react-router-dom"
 import { AdminDashboard, AssessmentDetailPage, AssessmentEditorPage, AssessmentsPage, NewAssessmentPage } from "@/features/assessments"
 import { CompletedPage, PreparationPage } from "@/features/assignments"
-import { EmployeeHome, OrganizationSetupPage, RequireRole, SignInPage, useAuth } from "@/features/auth"
+import { AccessPendingPage, EmployeeHome, EmployeeSignInPage, RequireRole, SignInPage, useAuth } from "@/features/auth"
 import { InvitationEntryPage, InvitePage } from "@/features/invitations"
 import { PageSkeleton } from "@/components/shared/AsyncState"
 import { AdminLayout } from "@/layouts/AdminLayout"
@@ -16,7 +16,7 @@ const AssessmentSessionPage = lazy(() => import("@/features/liveAssessment").the
 function HomeRedirect() {
   const auth = useAuth()
   if (auth.isLoading) return <main className="p-8 text-sm text-muted-foreground">Loading session…</main>
-  if (!auth.session) return <Navigate to="/sign-in" replace />
+  if (!auth.session) return <Navigate to="/admin/sign-in" replace />
   return <Navigate to={homePathForRole(auth.role)} replace />
 }
 
@@ -26,8 +26,9 @@ function NotFound() {
 
 export const router = createBrowserRouter([
   { path: "/", element: <HomeRedirect /> },
-  { path: "/sign-in", element: <SignInPage /> },
-  { path: "/setup", element: <OrganizationSetupPage /> },
+  { path: "/admin/sign-in", element: <SignInPage /> },
+  { path: "/employee/sign-in", element: <EmployeeSignInPage /> },
+  { path: "/access-pending", element: <AccessPendingPage /> },
   { path: "/invite/:token", element: <InvitationEntryPage /> },
   { path: "/invitations/:token", element: <InvitationEntryPage /> },
   { element: <RequireRole role="ADMIN" />, children: [{ element: <AdminLayout />, children: [

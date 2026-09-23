@@ -22,3 +22,16 @@ export type StartedAttempt = {
   token: string
   url: string
 }
+
+export type EmployeeAssignmentSummary = {
+  assignmentId: string
+  status: Exclude<AssignmentStatus, "CANCELLED">
+  assessmentId: string
+  name: string
+  description: string
+  updatedAt: string
+  attemptsUsed: number
+  attemptsRemaining: number
+  latestAttemptStatus: "READY" | "IN_PROGRESS" | "PROCESSING" | "COMPLETED" | "ABANDONED" | "FAILED" | "EXPIRED" | null
+  hasActiveAttempt: boolean
+}
