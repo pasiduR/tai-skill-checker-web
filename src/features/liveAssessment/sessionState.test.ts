@@ -12,6 +12,6 @@ describe("resolveSessionState", () => {
   it("represents both sides of an active conversation", () => {
     expect(resolveSessionState({ connectionState: ConnectionState.Connected, agentState: "speaking", employeeSpeaking: false, ending: false, failed: false })).toBe("AGENT_SPEAKING")
     expect(resolveSessionState({ connectionState: ConnectionState.Connected, agentState: "listening", employeeSpeaking: false, ending: false, failed: false })).toBe("LISTENING")
-    expect(resolveSessionState({ connectionState: ConnectionState.Connected, agentState: "speaking", employeeSpeaking: true, ending: false, failed: false })).toBe("EMPLOYEE_SPEAKING")
+    expect(resolveSessionState({ connectionState: ConnectionState.Connected, agentState: "speaking", employeeSpeaking: true, ending: false, failed: false })).toBe("AGENT_SPEAKING")
   })
 })

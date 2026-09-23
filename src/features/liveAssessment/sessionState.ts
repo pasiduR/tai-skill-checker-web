@@ -12,8 +12,8 @@ export function resolveSessionState(input: {
   if (input.ending) return "ENDING"
   if (input.connectionState === ConnectionState.Disconnected) return "DISCONNECTED"
   if (input.connectionState !== ConnectionState.Connected) return "CONNECTING"
-  if (input.employeeSpeaking) return "EMPLOYEE_SPEAKING"
   if (input.agentState === "speaking") return "AGENT_SPEAKING"
+  if (input.employeeSpeaking) return "EMPLOYEE_SPEAKING"
   if (input.agentState === "listening") return "LISTENING"
   return "CONNECTED"
 }
