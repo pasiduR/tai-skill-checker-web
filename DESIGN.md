@@ -146,7 +146,27 @@ spacing:
   xxl: 48px
   section: 96px
 
+application-density:
+  desktopRootSize: 15px
+  topBarHeight: 56px
+  sidebarWidth: 224px
+  pageGap: 20px
+  cardPadding: 20px
+  cardPaddingWide: 24px
+  pageTitleDesktop: 36px
+
 components:
+  application-shell:
+    backgroundColor: "{colors.surface-soft}"
+    sidebarBackground: "{colors.canvas}"
+    sidebarWidth: "{application-density.sidebarWidth}"
+    topBarHeight: "{application-density.topBarHeight}"
+    contentMaxWidth: 1180px
+  application-card:
+    backgroundColor: "{colors.canvas}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.lg}"
+    padding: "{application-density.cardPadding}"
   top-nav-light:
     backgroundColor: "{colors.canvas}"
     textColor: "{colors.ink}"
@@ -389,6 +409,17 @@ CoinbaseDisplay, CoinbaseSans, and CoinbaseMono are licensed Coinbase typefaces.
 
 ## Layout
 
+### Authenticated Application Shell
+
+The authenticated product uses a denser rhythm than the public-facing editorial system. On desktop it follows a persistent **224px left navigation + 56px utility bar + bounded workspace** structure. The workspace sits on `{colors.surface-soft}` while navigation and content cards use `{colors.canvas}`, creating hierarchy with surface contrast rather than shadows.
+
+- Desktop root type scale is 15px (mobile remains 16px for legibility), giving the product the information density of a browser at roughly 90–94% zoom without applying CSS `zoom` or shrinking mobile controls.
+- Workspace content caps at 1180px and uses 20px gaps; application cards use 20px padding, increasing to 24px when room allows.
+- Product page titles use 30–36px, not the 44–80px editorial display scale.
+- Admin navigation remains persistent on desktop and becomes a horizontally scrollable route bar on small screens.
+- Employee assessment and live-session flows remain distraction-free and do not inherit the admin sidebar.
+- Dashboard composition may use a broad primary workspace column with a narrower status rail, matching the hierarchy of the structural reference without introducing decorative widgets or inactive controls.
+
 ### Spacing System
 - **Base unit:** 4px.
 - **Tokens:** `{spacing.xxs}` 4px · `{spacing.xs}` 8px · `{spacing.sm}` 12px · `{spacing.base}` 16px · `{spacing.md}` 20px · `{spacing.lg}` 24px · `{spacing.xl}` 32px · `{spacing.xxl}` 48px · `{spacing.section}` 96px.
@@ -396,7 +427,8 @@ CoinbaseDisplay, CoinbaseSans, and CoinbaseMono are licensed Coinbase typefaces.
 - **Card internal padding:** `{spacing.xl}` (32px) for feature cards and product-UI mockups.
 
 ### Grid & Container
-- **Max content width:** ~1200px centered. Hero photography full-bleed.
+- **Max editorial content width:** ~1200px centered. Hero photography full-bleed.
+- **Max authenticated workspace width:** 1180px within the application shell.
 - **Editorial body:** Single 12-column grid.
 - **Feature card grids:** 2-up at desktop for hero splits, 3-up for benefit grids.
 - **Footer:** 6-column link list at desktop.

@@ -10,5 +10,5 @@ export function ErrorNotice({ message }: { message: string }) {
 }
 
 export function EmptyState({ title, description, action }: { title: string; description: string; action?: React.ReactNode }) {
-  return <div className="rounded-xl border bg-white px-6 py-12 text-center"><h2 className="text-lg font-semibold">{title}</h2><p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">{description}</p>{action && <div className="mt-6">{action}</div>}</div>
+  return <div className="rounded-2xl border bg-white px-5 py-9 text-center sm:px-6"><h2 className="text-lg font-semibold">{title}</h2><p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">{description}</p>{action && <div className="mt-5">{action}</div>}</div>
 }
