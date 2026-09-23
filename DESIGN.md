@@ -167,6 +167,13 @@ components:
     textColor: "{colors.ink}"
     rounded: "{rounded.lg}"
     padding: "{application-density.cardPadding}"
+  interview-room:
+    backgroundColor: "{colors.surface-dark}"
+    textColor: "{colors.on-dark}"
+    height: 100dvh
+    headerHeight: 60px
+    transcriptBackground: "{colors.surface-dark-elevated}"
+    transcriptWidth: minmax(360px, 0.46fr)
   top-nav-light:
     backgroundColor: "{colors.canvas}"
     textColor: "{colors.ink}"
@@ -419,6 +426,17 @@ The authenticated product uses a denser rhythm than the public-facing editorial 
 - Admin navigation remains persistent on desktop and becomes a horizontally scrollable route bar on small screens.
 - Employee assessment and live-session flows remain distraction-free and do not inherit the admin sidebar.
 - Dashboard composition may use a broad primary workspace column with a narrower status rail, matching the hierarchy of the structural reference without introducing decorative widgets or inactive controls.
+
+### Full-screen Interview Room
+
+The active employee interview is an exception to the normal authenticated shell. It occupies `100dvh`, removes global navigation and page padding, and prevents accidental navigation while an attempt is active. Its hierarchy is always: compact session header, interview stage, persistent controls.
+
+- Before speech begins, the interview stage uses the full available canvas. The microphone, current realtime state, short guidance, and audio activity remain centered; the transcript is represented only by a quiet expectation label.
+- When the first non-empty transcript arrives, a transcript rail enters from the right on desktop and below the stage on smaller screens. The latest text stays in view automatically.
+- Transcript growth must never move the header or microphone controls. Only the transcript rail scrolls on desktop; the full content area may scroll on smaller screens.
+- Employee and interviewer turns use alignment, surface, and labels together so speaker identity never relies on color alone.
+- Partial live captions may update in place. The transcript is explicitly labeled as a draft that may contain errors.
+- Mute and end controls remain in a persistent footer for the full session. The destructive end action stays visually separated from microphone control.
 
 ### Spacing System
 - **Base unit:** 4px.

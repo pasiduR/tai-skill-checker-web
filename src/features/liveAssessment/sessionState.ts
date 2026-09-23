@@ -28,3 +28,14 @@ export const sessionStateLabel: Record<SessionState, string> = {
   DISCONNECTED: "Session disconnected",
   ERROR: "Connection problem",
 }
+
+export const sessionStateShortLabel: Record<SessionState, string> = {
+  CONNECTING: "Connecting",
+  CONNECTED: "Connected",
+  LISTENING: "Listening",
+  AGENT_SPEAKING: "Interviewer speaking",
+  EMPLOYEE_SPEAKING: "You’re speaking",
+  ENDING: "Ending",
+  DISCONNECTED: "Disconnected",
+  ERROR: "Connection issue",
+}
