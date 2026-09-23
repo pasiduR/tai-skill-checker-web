@@ -10,12 +10,13 @@ import {
   useTranscriptions,
   useVoiceAssistant,
 } from "@livekit/components-react"
-import { AudioWaveform, Mic, MicOff, PhoneOff, ShieldCheck } from "lucide-react"
+import { Mic, MicOff, PhoneOff, ShieldCheck } from "lucide-react"
 import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom"
 import { ConnectionState, Track } from "livekit-client"
 import { queryKeys } from "@/api"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import logo from "@/assets/logo.png"
 import { cn } from "@/lib/utils"
 import { abandonAttempt } from "../api/session"
 import { getLatestAgentCaption } from "../captions"
@@ -79,7 +80,7 @@ function SessionRoom({ assignmentId, attemptId, assessmentTitle, failed }: { ass
 
   return <div className="flex h-dvh min-h-0 flex-col overflow-hidden bg-surface-dark text-white">
     <header className="flex shrink-0 items-center justify-between gap-4 border-b border-white/10 px-4 py-3 sm:px-6 lg:px-8">
-      <div className="flex min-w-0 items-center gap-3"><span className="grid size-9 shrink-0 place-items-center rounded-xl bg-primary text-primary-foreground"><AudioWaveform className="size-4" /></span><div className="min-w-0"><p className="text-[11px] font-medium uppercase tracking-[0.12em] text-[#a8acb3]">Live interview</p><h1 className="truncate text-sm font-semibold sm:text-base">{assessmentTitle}</h1></div></div>
+      <div className="flex min-w-0 items-center gap-3"><img src={logo} alt="TAI Skill Checker" className="size-9 shrink-0" /><div className="min-w-0"><p className="text-[11px] font-medium uppercase tracking-[0.12em] text-[#a8acb3]">Live interview</p><h1 className="truncate text-sm font-semibold sm:text-base">{assessmentTitle}</h1></div></div>
       <Badge className="shrink-0 border border-white/10 bg-white/10 text-white hover:bg-white/10" aria-label={sessionStateLabel[state]}><span className={`mr-2 size-2 rounded-full ${state === "ERROR" || state === "DISCONNECTED" ? "bg-red-400" : state === "CONNECTING" ? "bg-amber-300" : "bg-primary"}`} /><span className="sm:hidden">{sessionStateShortLabel[state]}</span><span className="hidden sm:inline">{sessionStateLabel[state]}</span></Badge>
     </header>
 
