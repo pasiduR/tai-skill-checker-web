@@ -26,3 +26,5 @@ npm run build
 Phase One includes session-aware role routing, the admin shell, assessment list/detail pages, manual and AI-assisted draft editing, PDF upload and processing, publishing, and bulk invitation delivery status.
 
 Phase Two adds invitation acceptance, employee preparation and microphone checks, server-authorized LiveKit room entry, explicit realtime session states, live transcription, interruption handling, and a locked completion screen.
+
+Post-interview evaluation adds the admin-only `/admin/evaluations` queue with assessment/status filters, retry for failed rows, and links to the existing attempt report. Reports poll only while an evaluation is queued or processing, show evidence-linked 1–5 competency results when complete, and stop with an explicit retryable failure state when evaluation fails.

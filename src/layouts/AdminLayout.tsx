@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { Activity, LayoutDashboard, LogOut, PanelsTopLeft } from "lucide-react"
+import { Activity, ClipboardCheck, LayoutDashboard, LogOut, PanelsTopLeft } from "lucide-react"
 import { NavLink, Outlet, useNavigate } from "react-router-dom"
 import { queryKeys } from "@/api"
 import { BrandMark } from "@/components/shared/BrandMark"
@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils"
 const navigation = [
   { to: "/admin", label: "Overview", icon: LayoutDashboard, end: true },
   { to: "/admin/assessments", label: "Assessments", icon: PanelsTopLeft },
+  { to: "/admin/evaluations", label: "Evaluations", icon: ClipboardCheck },
   { to: "/admin/live", label: "Live attempts", icon: Activity },
 ]
 

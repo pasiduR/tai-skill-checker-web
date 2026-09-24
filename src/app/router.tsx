@@ -10,6 +10,7 @@ import { EmployeeLayout } from "@/layouts/EmployeeLayout"
 import { homePathForRole } from "@/features/auth/routing"
 import { LiveAttemptPage, LiveAttemptsPage } from "@/features/liveInspection"
 import { AttemptReportPage } from "@/features/reports"
+import { EvaluationsPage } from "@/features/evaluations"
 
 const AssessmentSessionPage = lazy(() => import("@/features/liveAssessment").then((module) => ({ default: module.AssessmentSessionPage })))
 
@@ -38,6 +39,7 @@ export const router = createBrowserRouter([
     { path: "/admin/assessments/:id", element: <AssessmentDetailPage /> },
     { path: "/admin/assessments/:id/edit", element: <AssessmentEditorPage /> },
     { path: "/admin/assessments/:id/invite", element: <InvitePage /> },
+    { path: "/admin/evaluations", element: <EvaluationsPage /> },
     { path: "/admin/live", element: <LiveAttemptsPage /> },
     { path: "/admin/live/:attemptId", element: <LiveAttemptPage /> },
     { path: "/admin/attempts/:attemptId", element: <AttemptReportPage /> },

@@ -1,4 +1,4 @@
-import { AlertCircle, ArrowLeft, CheckCircle2, Clock3, ExternalLink, GraduationCap, Lightbulb, Volume2 } from "lucide-react"
+import { AlertCircle, ArrowLeft, CheckCircle2, Clock3, ExternalLink, GraduationCap, Lightbulb, RefreshCw, Volume2 } from "lucide-react"
 import { Link, useParams } from "react-router-dom"
 import { EmptyState, ErrorNotice, PageSkeleton } from "@/components/shared/AsyncState"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { Transcript, useAttemptInspection, useAttemptRecording } from "@/features/attempts"
 import { scoreLabel, scorePercentage } from "../reportFormat"
+import { useRetryEvaluation } from "@/features/evaluations"
 
 function ProcessingState() {
   return <div className="rounded-3xl border bg-muted px-6 py-14 text-center sm:px-12"><Clock3 className="mx-auto size-8 text-primary" /><h2 className="mt-5 text-xl font-semibold">Report processing</h2><p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-muted-foreground">The evaluator is reviewing the transcript and evidence. This page refreshes automatically.</p></div>
@@ -20,6 +21,7 @@ function ListSection({ title, items, icon: Icon }: { title: string; items: strin
 export function AttemptReportPage() {
   const { attemptId = "" } = useParams()
   const inspection = useAttemptInspection(attemptId)
+  const retry = useRetryEvaluation()
   const reportReady = inspection.data?.evaluation?.status === "COMPLETED" && inspection.data.evaluation.overallScore !== null
   const recording = useAttemptRecording(attemptId, reportReady)
 
@@ -28,8 +30,10 @@ export function AttemptReportPage() {
   const data = inspection.data
   const evaluation = data.evaluation
   const failed = evaluation?.status === "FAILED" || data.attempt.status === "FAILED"
+  const notSubmitted = data.attempt.status === "ABANDONED" || data.attempt.status === "EXPIRED"
 
-  if (failed) return <div className="space-y-8"><Button variant="ghost" asChild><Link to="/admin/live"><ArrowLeft />Back to live attempts</Link></Button><ErrorNotice message="The report could not be generated. The assessment responses are preserved for review." /></div>
+  if (failed) return <div className="space-y-8"><Button variant="ghost" asChild><Link to="/admin/evaluations"><ArrowLeft />Back to evaluations</Link></Button><ErrorNotice message="The report could not be generated. The assessment responses are preserved for review." />{evaluation?.status === "FAILED" && <div><Button disabled={retry.isPending} onClick={() => retry.mutate(evaluation.id)}><RefreshCw />{retry.isPending ? "Retrying…" : "Retry evaluation"}</Button>{retry.error && <p className="mt-3 text-sm text-destructive">{retry.error.message}</p>}</div>}</div>
+  if (notSubmitted) return <div className="space-y-8"><Button variant="ghost" asChild><Link to="/admin/live"><ArrowLeft />Back to live attempts</Link></Button><EmptyState title="No evaluation was created" description="This interview ended before successful submission, so it was not sent for scoring." /></div>
   if (!reportReady || !evaluation || evaluation.overallScore === null) return <div className="space-y-8"><Button variant="ghost" asChild><Link to="/admin/live"><ArrowLeft />Back to live attempts</Link></Button><header><p className="eyebrow">Attempt report</p><h1 className="font-display mt-2 text-4xl sm:text-5xl">{data.assessment.name}</h1></header><ProcessingState /></div>
 
   const maxScore = evaluation.maxScore ?? 5

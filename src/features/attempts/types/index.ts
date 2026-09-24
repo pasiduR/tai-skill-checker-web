@@ -44,12 +44,14 @@ export type CompetencyScore = {
 }
 
 export type AttemptEvaluation = {
+  id: string
   status: "PENDING" | "PROCESSING" | "COMPLETED" | "FAILED"
   overallScore: number | null
   maxScore?: number
   strengths: string[] | null
   gaps: string[] | null
   recommendations: string[] | null
+  errorMessage: string | null
   competencyScores: CompetencyScore[]
 }
 
