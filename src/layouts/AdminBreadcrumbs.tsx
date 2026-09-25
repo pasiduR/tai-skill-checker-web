@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query"
 import { Fragment } from "react"
 import { Link, useLocation } from "react-router-dom"
-import { ChevronRight } from "@/components/ui/icons"
+import { ArrowLeft, ChevronRight } from "@/components/ui/icons"
+import { Button } from "@/components/ui/button"
 import { attemptInspectionQuery } from "@/features/attempts"
 import { assessmentQuery } from "@/features/assessments/hooks/useAssessment"
 import { cn } from "@/lib/utils"
@@ -51,8 +52,10 @@ export function AdminBreadcrumbs() {
   const { pathname } = useLocation()
   const crumbs = adminBreadcrumbs(pathname, useCachedNames(pathname))
   const lastIndex = crumbs.length - 1
+  const parent = [...crumbs].reverse().find((crumb) => crumb.to)
 
-  return <nav aria-label="Breadcrumb" className="min-w-0 flex-1">
+  return <nav aria-label="Breadcrumb" className="flex min-w-0 flex-1 items-center gap-1.5">
+    {parent?.to && <Button className="size-8 shrink-0" size="icon" variant="ghost" asChild><Link to={parent.to} aria-label={`Back to ${parent.label}`} title={`Back to ${parent.label}`}><ArrowLeft /></Link></Button>}
     <ol className="flex min-w-0 items-center gap-1 text-sm">
       {crumbs.map((crumb, index) => {
         const isLast = index === lastIndex

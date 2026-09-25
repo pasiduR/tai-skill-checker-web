@@ -1,6 +1,14 @@
+import type { CSSProperties } from "react"
 import { cn } from "@/lib/utils"
 
-const BAR_COUNT = 4
+// Peak height of each bar (fraction of the loader height) and its start delay: centre-weighted, rippling outward.
+const BARS = [
+  { peak: 0.6, delay: 160 },
+  { peak: 0.86, delay: 80 },
+  { peak: 1, delay: 0 },
+  { peak: 0.84, delay: 80 },
+  { peak: 0.56, delay: 160 },
+]
 
 /**
  * Audio-bar micro animation used for every loading state (buttons, inline, page).
@@ -8,7 +16,7 @@ const BAR_COUNT = 4
  */
 export function BarsLoader({ size = "sm", className }: { size?: "sm" | "md" | "lg"; className?: string }) {
   return <span aria-hidden="true" data-size={size} className={cn("bars-loader", className)}>
-    {Array.from({ length: BAR_COUNT }, (_, index) => <span key={index} style={{ animationDelay: `${index * 120}ms` }} />)}
+    {BARS.map(({ peak, delay }, index) => <span key={index} style={{ "--peak": peak, animationDelay: `${delay}ms` } as CSSProperties} />)}
   </span>
 }
 

@@ -1,48 +1,51 @@
-export { default as Assessment } from "@mui/icons-material/AssignmentOutlined"
-export { default as AlertCircle } from "@mui/icons-material/ErrorOutlined"
-export { default as AlertTriangle } from "@mui/icons-material/WarningAmber"
-export { default as ArrowLeft } from "@mui/icons-material/ArrowBackOutlined"
-export { default as ArrowRight } from "@mui/icons-material/ArrowForwardOutlined"
-export { default as VoiceActivity } from "@mui/icons-material/GraphicEqOutlined"
-export { default as LiveActivity } from "@mui/icons-material/GraphicEqOutlined"
-export { default as Bell } from "@mui/icons-material/NotificationsNoneOutlined"
-export { default as CalendarClock } from "@mui/icons-material/EventOutlined"
-export { default as Check } from "@mui/icons-material/CheckOutlined"
-export { default as ChevronRight } from "@mui/icons-material/ChevronRightOutlined"
-export { default as CheckCircle2 } from "@mui/icons-material/CheckCircleOutlined"
-export { default as Draft } from "@mui/icons-material/EditNoteOutlined"
-export { default as Evaluation } from "@mui/icons-material/FactCheckOutlined"
-export { default as Clock3 } from "@mui/icons-material/ScheduleOutlined"
-export { default as Edit3 } from "@mui/icons-material/EditOutlined"
-export { default as ExternalLink } from "@mui/icons-material/OpenInNewOutlined"
-export { default as Eye } from "@mui/icons-material/VisibilityOutlined"
-export { default as PdfFile } from "@mui/icons-material/PictureAsPdfOutlined"
-export { default as GraduationCap } from "@mui/icons-material/SchoolOutlined"
-export { default as Headphones } from "@mui/icons-material/HeadphonesOutlined"
-export { default as LayoutDashboard } from "@mui/icons-material/DashboardOutlined"
-export { default as Lightbulb } from "@mui/icons-material/LightbulbOutlined"
-export { default as LockKeyhole } from "@mui/icons-material/LockOutlined"
-export { default as LogOut } from "@mui/icons-material/LogoutOutlined"
-export { default as Mail } from "@mui/icons-material/MailOutlined"
-export { default as Menu } from "@mui/icons-material/MenuOutlined"
-export { default as Mic } from "@mui/icons-material/MicNoneOutlined"
-export { default as MicOff } from "@mui/icons-material/MicOffOutlined"
-export { PanelLeft } from "./panel-left-icon"
-export { default as PhoneOff } from "@mui/icons-material/CallEndOutlined"
-export { default as Plus } from "@mui/icons-material/AddOutlined"
-export { default as LiveConnection } from "@mui/icons-material/SensorsOutlined"
-export { default as RefreshCw } from "@mui/icons-material/RefreshOutlined"
-export { default as RotateCcw } from "@mui/icons-material/ReplayOutlined"
-export { default as Save } from "@mui/icons-material/SaveOutlined"
-export { default as Send } from "@mui/icons-material/SendOutlined"
-export { default as Settings } from "@mui/icons-material/SettingsOutlined"
-export { default as Sliders } from "@mui/icons-material/TuneOutlined"
-export { default as Stop } from "@mui/icons-material/StopCircleOutlined"
-export { default as ShieldAlert } from "@mui/icons-material/SecurityOutlined"
-export { default as ShieldCheck } from "@mui/icons-material/VerifiedUserOutlined"
-export { default as Sparkles } from "@mui/icons-material/AutoAwesome"
-export { default as Upload } from "@mui/icons-material/UploadFileOutlined"
-export { default as UserRound } from "@mui/icons-material/PersonOutlined"
-export { default as Volume2 } from "@mui/icons-material/VolumeUpOutlined"
-export { default as X } from "@mui/icons-material/CloseOutlined"
-export { default as XCircle } from "@mui/icons-material/CancelOutlined"
+// App-wide icon set (lucide). Import icons from here so names stay stable if the set changes again.
+export {
+  ClipboardList as Assessment,
+  CircleAlert as AlertCircle,
+  TriangleAlert as AlertTriangle,
+  ArrowLeft,
+  ArrowRight,
+  AudioLines as VoiceActivity,
+  AudioLines as LiveActivity,
+  Bell,
+  CalendarClock,
+  Check,
+  ChevronRight,
+  CircleCheck as CheckCircle2,
+  FilePenLine as Draft,
+  ClipboardCheck as Evaluation,
+  Clock3,
+  PenLine as Edit3,
+  ExternalLink,
+  Eye,
+  FileText as PdfFile,
+  GraduationCap,
+  Headphones,
+  LayoutDashboard,
+  Lightbulb,
+  LockKeyhole,
+  LogOut,
+  Mail,
+  Menu,
+  Mic,
+  MicOff,
+  PanelLeft,
+  PhoneOff,
+  Plus,
+  Radio as LiveConnection,
+  RefreshCw,
+  RotateCcw,
+  Save,
+  Send,
+  Settings,
+  SlidersHorizontal as Sliders,
+  CircleStop as Stop,
+  ShieldAlert,
+  ShieldCheck,
+  Sparkles,
+  Upload,
+  UserRound,
+  Volume2,
+  X,
+  CircleX as XCircle,
+} from "lucide-react"
