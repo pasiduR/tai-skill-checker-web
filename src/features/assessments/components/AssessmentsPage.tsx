@@ -4,14 +4,23 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { EmptyState, ErrorNotice, PageSkeleton } from "@/components/shared/AsyncState"
+import { mockAssessments } from "@/lib/skeletonFixtures"
 import { useAssessments } from "../hooks/useAssessment"
+import type { AssessmentSummary } from "../types"
 import { PageHeader } from "./PageHeader"
 
 export function AssessmentsPage() {
   const query = useAssessments()
-  if (query.isLoading) return <PageSkeleton />
+  if (query.isLoading) return <AssessmentsSkeleton />
   if (query.error) return <ErrorNotice message={query.error.message} />
-  const assessments = query.data ?? []
+  return <AssessmentsView assessments={query.data ?? []} />
+}
+
+export function AssessmentsSkeleton() {
+  return <PageSkeleton name="admin-assessments" fixture={<AssessmentsView assessments={mockAssessments} />} />
+}
+
+function AssessmentsView({ assessments }: { assessments: AssessmentSummary[] }) {
   return <div className="space-y-8">
     <PageHeader eyebrow="Admin workspace" title="Assessments" description="Create, publish, and invite employees to structured voice assessments." actions={<Button asChild><Link to="/admin/assessments/new"><Plus />New assessment</Link></Button>} />
     {assessments.length === 0 ? <EmptyState title="No assessments yet" description="Create a draft to define competencies, scenarios, rubrics, and preparation guidance." action={<Button asChild><Link to="/admin/assessments/new">Create assessment</Link></Button>} /> :

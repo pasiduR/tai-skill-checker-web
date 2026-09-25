@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { CheckCircle2, Mail, RotateCcw, XCircle } from "@/components/ui/icons"
 import { Link, useParams } from "react-router-dom"
 import { queryKeys } from "@/api"
-import { ErrorNotice, PageSkeleton } from "@/components/shared/AsyncState"
+import { ErrorNotice, InlineSkeleton, PageSkeleton } from "@/components/shared/AsyncState"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -13,14 +13,27 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { PageHeader } from "@/features/assessments/components/PageHeader"
 import { useAssessment } from "@/features/assessments/hooks/useAssessment"
+import type { AssessmentSummary } from "@/features/assessments/types"
+import { mockAssessment, mockEmployeeInvitations } from "@/lib/skeletonFixtures"
 import { inviteEmployees, listEmployeeInvitations, reinviteEmployee, type EmployeeInvitation } from "../api/invitations"
 import { emailsSchema } from "../schemas"
 
 export function InvitePage() {
   const { id = "" } = useParams()
-  const queryClient = useQueryClient()
   const assessment = useAssessment(id)
   const employees = useQuery({ queryKey: queryKeys.assessmentInvitations(id), queryFn: () => listEmployeeInvitations(id), enabled: Boolean(id) })
+  if (assessment.isLoading) return <InviteSkeleton />
+  if (assessment.error || !assessment.data) return <ErrorNotice message={assessment.error?.message ?? "Assessment not found."} />
+  return <InviteView assessment={assessment.data} employees={employees} />
+}
+
+export function InviteSkeleton() {
+  return <PageSkeleton name="admin-invite" fixture={<InviteView assessment={mockAssessment} employees={{ data: mockEmployeeInvitations, isLoading: false, error: null }} />} />
+}
+
+function InviteView({ assessment, employees }: { assessment: AssessmentSummary; employees: { data?: EmployeeInvitation[]; isLoading: boolean; error: Error | null } }) {
+  const id = assessment.id
+  const queryClient = useQueryClient()
   const [value, setValue] = useState("")
   const [validationError, setValidationError] = useState<string>()
   const [selected, setSelected] = useState<EmployeeInvitation>()
@@ -40,9 +53,6 @@ export function InvitePage() {
     },
   })
 
-  if (assessment.isLoading) return <PageSkeleton />
-  if (assessment.error || !assessment.data) return <ErrorNotice message={assessment.error?.message ?? "Assessment not found."} />
-
   const send = () => {
     const parsed = emailsSchema.safeParse(value)
     if (!parsed.success) {
@@ -54,7 +64,7 @@ export function InvitePage() {
   }
 
   return <div className="space-y-8">
-    <PageHeader eyebrow="Employee invitations" title={`Invite to ${assessment.data.name}`} description="Send invitations, review employee access, and grant a fresh set of attempts when someone needs to try again." actions={<Button variant="outline" asChild><Link to={`/admin/assessments/${id}`}>Back to assessment</Link></Button>} />
+    <PageHeader eyebrow="Employee invitations" title={`Invite to ${assessment.name}`} description="Send invitations, review employee access, and grant a fresh set of attempts when someone needs to try again." actions={<Button variant="outline" asChild><Link to={`/admin/assessments/${id}`}>Back to assessment</Link></Button>} />
 
     <Card className="max-w-2xl shadow-none">
       <CardHeader><CardTitle>Email employees</CardTitle><CardDescription>Separate up to 100 addresses with commas or new lines.</CardDescription></CardHeader>
@@ -73,7 +83,7 @@ export function InvitePage() {
     <Card className="shadow-none">
       <CardHeader><CardTitle>Invited employees</CardTitle><CardDescription>Reinviting rotates the invitation link and grants the employee a fresh set of attempts. Previous attempts and reports remain available.</CardDescription></CardHeader>
       <CardContent>
-        {employees.isLoading && <p className="text-sm text-muted-foreground">Loading employees…</p>}
+        {employees.isLoading && <InlineSkeleton variant="rows" />}
         {employees.error && <ErrorNotice message={employees.error.message} />}
         {employees.data?.length === 0 && <p className="text-sm text-muted-foreground">No employees have been invited yet.</p>}
         {employees.data && employees.data.length > 0 && <div className="divide-y">

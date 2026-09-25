@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { listEmployeeAssignments, type EmployeeAssignmentSummary } from "@/features/assignments"
+import { mockEmployeeAssignments } from "@/lib/skeletonFixtures"
 
 function assignmentState(assignment: EmployeeAssignmentSummary) {
   if (assignment.status === "COMPLETED") return { label: "Completed", icon: CheckCircle2 }
@@ -20,10 +21,17 @@ function assignmentState(assignment: EmployeeAssignmentSummary) {
 export function EmployeeHome() {
   const assignments = useQuery({ queryKey: queryKeys.employeeAssignments, queryFn: listEmployeeAssignments })
 
-  if (assignments.isLoading) return <PageSkeleton />
+  if (assignments.isLoading) return <EmployeeHomeSkeleton />
   if (assignments.error) return <ErrorNotice message="Your assessments could not be loaded." />
   if (!assignments.data?.length) return <EmptyState title="No assessments yet" description="Accepted assessment invitations will appear here." />
+  return <EmployeeHomeView assignments={assignments.data} />
+}
 
+export function EmployeeHomeSkeleton() {
+  return <PageSkeleton name="employee-home" fixture={<EmployeeHomeView assignments={mockEmployeeAssignments} />} />
+}
+
+function EmployeeHomeView({ assignments }: { assignments: EmployeeAssignmentSummary[] }) {
   return <div className="space-y-8">
     <header className="max-w-3xl">
       <p className="eyebrow">Employee workspace</p>
@@ -31,7 +39,7 @@ export function EmployeeHome() {
       <p className="mt-4 leading-7 text-muted-foreground">Prepare, start an available attempt, or review the status of work you have already submitted.</p>
     </header>
     <div className="grid gap-5 lg:grid-cols-2">
-      {assignments.data.map((assignment) => {
+      {assignments.map((assignment) => {
         const state = assignmentState(assignment)
         const StateIcon = state.icon
         const canStart = assignment.status === "READY" && assignment.attemptsRemaining > 0 && !assignment.hasActiveAttempt

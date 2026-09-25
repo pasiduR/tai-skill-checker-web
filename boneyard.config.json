@@ -1,0 +1,7 @@
+{
+  "url": "http://localhost:5173",
+  "routes": ["/__boneyard/admin", "/__boneyard/employee"],
+  "breakpoints": [375, 768, 1280, 1536],
+  "out": "./src/bones",
+  "wait": 800
+}

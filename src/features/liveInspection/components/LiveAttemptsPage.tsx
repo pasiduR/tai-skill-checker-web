@@ -6,7 +6,9 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { PageHeader } from "@/features/assessments/components/PageHeader"
 import { useAssessments } from "@/features/assessments/hooks/useAssessment"
-import { useActiveAttempts } from "@/features/attempts"
+import type { AssessmentSummary } from "@/features/assessments/types"
+import { useActiveAttempts, type ActiveAttempt } from "@/features/attempts"
+import { mockActiveAttempts, mockAssessments } from "@/lib/skeletonFixtures"
 
 function heartbeatLabel(value: string | null) {
   if (!value) return "Waiting for activity"
@@ -17,11 +19,17 @@ function heartbeatLabel(value: string | null) {
 export function LiveAttemptsPage() {
   const attempts = useActiveAttempts()
   const assessments = useAssessments()
-  if (attempts.isLoading || assessments.isLoading) return <PageSkeleton />
+  if (attempts.isLoading || assessments.isLoading) return <LiveAttemptsSkeleton />
   if (attempts.error) return <ErrorNotice message="Live attempts could not be loaded. Please try again." />
-  const assessmentNames = new Map((assessments.data ?? []).map((assessment) => [assessment.id, assessment.name]))
-  const active = attempts.data ?? []
+  return <LiveAttemptsView active={attempts.data ?? []} assessments={assessments.data ?? []} />
+}
 
+export function LiveAttemptsSkeleton() {
+  return <PageSkeleton name="admin-live-attempts" fixture={<LiveAttemptsView active={mockActiveAttempts} assessments={mockAssessments} />} />
+}
+
+function LiveAttemptsView({ active, assessments }: { active: ActiveAttempt[]; assessments: AssessmentSummary[] }) {
+  const assessmentNames = new Map(assessments.map((assessment) => [assessment.id, assessment.name]))
   return <div className="space-y-8">
     <PageHeader eyebrow="Realtime oversight" title="Live attempts" description="Listen to active assessments and follow each conversation as it happens." />
     {active.length === 0 ? <EmptyState title="No active assessments" description="Live attempts appear here after an employee starts an assessment." /> :

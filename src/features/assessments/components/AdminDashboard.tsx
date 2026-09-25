@@ -6,7 +6,11 @@ import { useAuth } from "@/features/auth"
 import { useActiveAttempts } from "@/features/attempts"
 import { useEvaluations } from "@/features/evaluations"
 import { cn } from "@/lib/utils"
+import { mockActiveAttempts, mockAssessments, mockEvaluations } from "@/lib/skeletonFixtures"
+import type { ActiveAttempt } from "@/features/attempts"
+import type { EvaluationListItem } from "@/features/evaluations"
 import { useAssessments } from "../hooks/useAssessment"
+import type { AssessmentSummary } from "../types"
 
 const coverStyles = [
   "overview-cover-dark",
@@ -26,16 +30,19 @@ export function AdminDashboard() {
   const attemptsQuery = useActiveAttempts()
   const evaluationsQuery = useEvaluations({})
 
-  if (assessmentsQuery.isLoading || attemptsQuery.isLoading || evaluationsQuery.isLoading) return <PageSkeleton />
+  if (assessmentsQuery.isLoading || attemptsQuery.isLoading || evaluationsQuery.isLoading) return <AdminDashboardSkeleton />
   if (assessmentsQuery.error || attemptsQuery.error || evaluationsQuery.error) return <ErrorNotice message="The operations overview could not be loaded. Please try again." />
+  return <AdminDashboardView name={auth.session?.user.name?.split(" ")[0] || "Administrator"} assessments={assessmentsQuery.data ?? []} activeAttempts={attemptsQuery.data ?? []} evaluations={evaluationsQuery.data ?? []} />
+}
 
-  const assessments = assessmentsQuery.data ?? []
-  const activeAttempts = attemptsQuery.data ?? []
-  const evaluations = evaluationsQuery.data ?? []
+export function AdminDashboardSkeleton() {
+  return <PageSkeleton name="admin-dashboard" fixture={<AdminDashboardView name="Administrator" assessments={mockAssessments} activeAttempts={mockActiveAttempts} evaluations={mockEvaluations} />} />
+}
+
+function AdminDashboardView({ name, assessments, activeAttempts, evaluations }: { name: string; assessments: AssessmentSummary[]; activeAttempts: ActiveAttempt[]; evaluations: EvaluationListItem[] }) {
   const published = assessments.filter((item) => item.status === "PUBLISHED").length
   const drafts = assessments.filter((item) => item.status === "DRAFT").length
   const completed = evaluations.filter((item) => item.status === "COMPLETED").length
-  const name = auth.session?.user.name?.split(" ")[0] || "Administrator"
   const recent = [...assessments].sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
   const featured = recent.slice(0, 3)
   const reviewQueue = [...evaluations].sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()).slice(0, 4)

@@ -1,10 +1,11 @@
 import { lazy, Suspense } from "react"
-import { Navigate, createBrowserRouter } from "react-router-dom"
+import { Navigate, Outlet, createBrowserRouter } from "react-router-dom"
 import { AdminDashboard, AssessmentDetailPage, AssessmentEditorPage, AssessmentsPage, NewAssessmentPage } from "@/features/assessments"
 import { CompletedPage, PreparationPage } from "@/features/assignments"
 import { AccessPendingPage, EmployeeHome, EmployeeSignInPage, RequireRole, SignInPage, useAuth } from "@/features/auth"
 import { InvitationEntryPage, InvitePage } from "@/features/invitations"
-import { PageSkeleton } from "@/components/shared/AsyncState"
+import { GenericPageSkeleton } from "@/components/shared/AsyncState"
+import { AdminSkeletonGallery, EmployeeSkeletonGallery } from "./BoneyardGallery"
 import { AdminLayout } from "@/layouts/AdminLayout"
 import { EmployeeLayout } from "@/layouts/EmployeeLayout"
 import { homePathForRole } from "@/features/auth/routing"
@@ -16,13 +17,19 @@ const AssessmentSessionPage = lazy(() => import("@/features/liveAssessment").the
 
 function HomeRedirect() {
   const auth = useAuth()
-  if (auth.isLoading) return <main className="p-8 text-sm text-muted-foreground">Loading session…</main>
+  if (auth.isLoading) return <main className="p-8"><GenericPageSkeleton /></main>
   if (!auth.session) return <Navigate to="/admin/sign-in" replace />
   return <Navigate to={homePathForRole(auth.role)} replace />
 }
 
 function NotFound() {
   return <main className="grid min-h-screen place-items-center p-6 text-center"><div><p className="font-mono text-xs text-muted-foreground">404</p><h1 className="mt-2 text-2xl font-semibold">Page not found</h1><a className="mt-5 inline-block text-sm text-primary underline" href="/">Return home</a></div></main>
+}
+
+function BoneyardCaptureRoute() {
+  const buildMode = Boolean((window as Window & { __BONEYARD_BUILD?: boolean }).__BONEYARD_BUILD)
+  const previewMode = import.meta.env.DEV && new URLSearchParams(window.location.search).has("preview")
+  return buildMode || previewMode ? <Outlet /> : <Navigate to="/" replace />
 }
 
 export const router = createBrowserRouter([
@@ -32,6 +39,10 @@ export const router = createBrowserRouter([
   { path: "/access-pending", element: <AccessPendingPage /> },
   { path: "/invite/:token", element: <InvitationEntryPage /> },
   { path: "/invitations/:token", element: <InvitationEntryPage /> },
+  { path: "/__boneyard", element: <BoneyardCaptureRoute />, children: [
+    { element: <AdminLayout />, children: [{ path: "admin", element: <AdminSkeletonGallery /> }] },
+    { element: <EmployeeLayout />, children: [{ path: "employee", element: <EmployeeSkeletonGallery /> }] },
+  ] },
   { element: <RequireRole role="ADMIN" />, children: [{ element: <AdminLayout />, children: [
     { path: "/admin", element: <AdminDashboard /> },
     { path: "/admin/assessments", element: <AssessmentsPage /> },
@@ -47,7 +58,7 @@ export const router = createBrowserRouter([
   { element: <RequireRole role="EMPLOYEE" />, children: [{ element: <EmployeeLayout />, children: [
     { path: "/employee", element: <EmployeeHome /> },
     { path: "/assessment/:assignmentId/prepare", element: <PreparationPage /> },
-    { path: "/assessment/:assignmentId/session", element: <Suspense fallback={<PageSkeleton />}><AssessmentSessionPage /></Suspense> },
+    { path: "/assessment/:assignmentId/session", element: <Suspense fallback={<GenericPageSkeleton />}><AssessmentSessionPage /></Suspense> },
     { path: "/assessment/:assignmentId/completed", element: <CompletedPage /> },
   ] }] },
   { path: "*", element: <NotFound /> },

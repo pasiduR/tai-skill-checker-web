@@ -1,12 +1,14 @@
 import { AlertCircle, ArrowLeft, CheckCircle2, Clock3, ExternalLink, GraduationCap, Lightbulb, RefreshCw, Volume2 } from "@/components/ui/icons"
 import { Link, useParams } from "react-router-dom"
-import { EmptyState, ErrorNotice, PageSkeleton } from "@/components/shared/AsyncState"
+import { EmptyState, ErrorNotice, InlineSkeleton, PageSkeleton } from "@/components/shared/AsyncState"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
-import { Transcript, useAttemptInspection, useAttemptRecording } from "@/features/attempts"
+import { Transcript, useAttemptInspection, useAttemptRecording, type AttemptInspection } from "@/features/attempts"
+import type { RecordingPlayback } from "@/features/attempts/types"
+import { mockInspection } from "@/lib/skeletonFixtures"
 import { scoreLabel, scorePercentage } from "../reportFormat"
 import { useRetryEvaluation } from "@/features/evaluations"
 
@@ -21,13 +23,21 @@ function ListSection({ title, items, icon: Icon }: { title: string; items: strin
 export function AttemptReportPage() {
   const { attemptId = "" } = useParams()
   const inspection = useAttemptInspection(attemptId)
-  const retry = useRetryEvaluation()
   const reportReady = inspection.data?.evaluation?.status === "COMPLETED" && inspection.data.evaluation.overallScore !== null
   const recording = useAttemptRecording(attemptId, reportReady)
 
-  if (inspection.isLoading) return <PageSkeleton />
+  if (inspection.isLoading) return <AttemptReportSkeleton />
   if (inspection.error || !inspection.data) return <ErrorNotice message="This attempt report could not be opened." />
-  const data = inspection.data
+  return <AttemptReportView data={inspection.data} recording={recording} />
+}
+
+export function AttemptReportSkeleton() {
+  return <PageSkeleton name="admin-attempt-report" fixture={<AttemptReportView data={mockInspection} recording={{ data: { url: "", expiresInSeconds: 600, recording: { id: "r1", mimeType: "audio/webm", byteSize: null, durationSeconds: null } }, isLoading: false }} />} />
+}
+
+function AttemptReportView({ data, recording }: { data: AttemptInspection; recording: { data?: RecordingPlayback; isLoading: boolean } }) {
+  const retry = useRetryEvaluation()
+  const reportReady = data.evaluation?.status === "COMPLETED" && data.evaluation.overallScore !== null
   const evaluation = data.evaluation
   const failed = evaluation?.status === "FAILED" || data.attempt.status === "FAILED"
   const notSubmitted = data.attempt.status === "ABANDONED" || data.attempt.status === "EXPIRED"
@@ -49,6 +59,6 @@ export function AttemptReportPage() {
 
     <section className="space-y-4"><div><p className="eyebrow">Supporting evidence</p><h2 className="mt-2 text-2xl font-semibold">Transcript backed findings</h2></div>{evaluation.competencyScores.some((score) => score.evidence.length > 0) ? <div className="grid gap-4 lg:grid-cols-2">{evaluation.competencyScores.flatMap((score) => score.evidence.map((evidence) => <Card key={evidence.id}><CardHeader><CardTitle className="text-base">{score.competencyName}</CardTitle></CardHeader><CardContent><p className="text-sm leading-6 text-muted-foreground">{evidence.reason}</p><Button className="mt-5" size="sm" variant="outline" asChild><a href={`#turn-${evidence.attemptTurnId}`}>View transcript evidence <ExternalLink /></a></Button></CardContent></Card>))}</div> : <EmptyState title="No evidence available" description="The evaluator did not return transcript references for this report." />}</section>
 
-    <section className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]"><Card><CardHeader><CardTitle>Transcript</CardTitle></CardHeader><CardContent><div className="max-h-[42rem] overflow-y-auto rounded-2xl bg-muted p-4 sm:p-5"><Transcript turns={data.turns} emptyMessage="No transcript was captured for this attempt." /></div></CardContent></Card><Card className="h-fit"><CardHeader><div className="flex items-center gap-3"><Volume2 className="size-5 text-primary" /><CardTitle>Audio recording</CardTitle></div></CardHeader><CardContent>{recording.isLoading ? <p className="text-sm text-muted-foreground">Preparing secure playback…</p> : recording.data ? <div className="space-y-3"><audio className="w-full" controls preload="metadata" src={recording.data.url}>Your browser does not support audio playback.</audio><p className="text-xs text-muted-foreground">This private playback link expires in {Math.round(recording.data.expiresInSeconds / 60)} minutes.</p></div> : <Alert><AlertCircle /><AlertTitle>Recording unavailable</AlertTitle><AlertDescription>The transcript and report remain available.</AlertDescription></Alert>}</CardContent></Card></section>
+    <section className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]"><Card><CardHeader><CardTitle>Transcript</CardTitle></CardHeader><CardContent><div className="max-h-[42rem] overflow-y-auto rounded-2xl bg-muted p-4 sm:p-5"><Transcript turns={data.turns} emptyMessage="No transcript was captured for this attempt." /></div></CardContent></Card><Card className="h-fit"><CardHeader><div className="flex items-center gap-3"><Volume2 className="size-5 text-primary" /><CardTitle>Audio recording</CardTitle></div></CardHeader><CardContent>{recording.isLoading ? <InlineSkeleton /> : recording.data ? <div className="space-y-3"><audio className="w-full" controls preload="metadata" src={recording.data.url}>Your browser does not support audio playback.</audio><p className="text-xs text-muted-foreground">This private playback link expires in {Math.round(recording.data.expiresInSeconds / 60)} minutes.</p></div> : <Alert><AlertCircle /><AlertTitle>Recording unavailable</AlertTitle><AlertDescription>The transcript and report remain available.</AlertDescription></Alert>}</CardContent></Card></section>
   </div>
 }

@@ -3,7 +3,7 @@ import { ArrowRight, CalendarClock, CheckCircle2, LockKeyhole, LogOut } from "@/
 import { Link, Navigate, useNavigate, useParams, useSearchParams } from "react-router-dom"
 import { queryKeys } from "@/api"
 import { BrandMark } from "@/components/shared/BrandMark"
-import { ErrorNotice, PageSkeleton } from "@/components/shared/AsyncState"
+import { ErrorNotice, GenericPageSkeleton } from "@/components/shared/AsyncState"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { signOut, useAuth } from "@/features/auth"
@@ -35,7 +35,7 @@ export function InvitationEntryPage() {
   })
 
   if (!token) return <Navigate to="/" replace />
-  if (auth.isLoading) return <main className="page-shell py-16"><PageSkeleton /></main>
+  if (auth.isLoading) return <main className="page-shell py-16"><GenericPageSkeleton /></main>
   if (magicLinkError) {
     if (auth.session && auth.role === "EMPLOYEE") return <Navigate to="/employee" replace />
     return <main className="grid min-h-screen place-items-center bg-muted p-6">
@@ -48,7 +48,7 @@ export function InvitationEntryPage() {
       </section>
     </main>
   }
-  if (invitation.isLoading) return <main className="page-shell py-16"><PageSkeleton /></main>
+  if (invitation.isLoading) return <main className="page-shell py-16"><GenericPageSkeleton /></main>
   if (invitation.error || !invitation.data) {
     if (auth.session && auth.role === "EMPLOYEE") return <Navigate to="/employee" replace />
     const expired = "code" in (invitation.error ?? {}) && (invitation.error as { code?: string }).code === "INVITATION_EXPIRED"

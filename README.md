@@ -14,6 +14,25 @@ React frontend for the admin assessment workflow and employee realtime voice ass
 
 The Vite development server runs at `http://localhost:5173` and proxies `/api` to the backend by default.
 
+During development, Boneyard automatically captures the loading fixtures from
+`/__boneyard` at the configured responsive breakpoints and refreshes
+`src/bones`. Keep the generated registry imported once from `src/main.tsx` and
+commit regenerated bone files whenever loading layouts change.
+
+For a manual rebuild, keep the Vite server running in one terminal and run the
+project command in another:
+
+```sh
+npm run bones
+```
+
+Use this command instead of a bare `npx boneyard-js build`: port `3000` belongs
+to the backend, while the React app and its `<Skeleton>` components run on port
+`5173`.
+
+If the first capture reports that Chromium is missing, install the browser used
+by Boneyard once with `npx playwright install chromium` and restart Vite.
+
 ## Checks
 
 ```sh

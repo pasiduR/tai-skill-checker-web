@@ -8,9 +8,11 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { PageHeader } from "@/features/assessments/components/PageHeader"
 import { useAssessments } from "@/features/assessments/hooks/useAssessment"
+import type { AssessmentSummary } from "@/features/assessments/types"
+import { mockAssessments, mockEvaluations } from "@/lib/skeletonFixtures"
 import { scoreLabel } from "@/features/reports/reportFormat"
 import { useEvaluations, useRetryEvaluation } from "../hooks/useEvaluations"
-import type { EvaluationStatus } from "../types"
+import type { EvaluationListItem, EvaluationStatus } from "../types"
 import { evaluationStatusLabel } from "../evaluationFormat"
 
 export function EvaluationsPage() {
@@ -18,16 +20,32 @@ export function EvaluationsPage() {
   const [assessmentId, setAssessmentId] = useState("")
   const evaluations = useEvaluations({ ...(status ? { status } : {}), ...(assessmentId ? { assessmentId } : {}) })
   const assessments = useAssessments()
-  const retry = useRetryEvaluation()
 
-  if (evaluations.isLoading || assessments.isLoading) return <PageSkeleton />
+  if (evaluations.isLoading || assessments.isLoading) return <EvaluationsSkeleton />
   if (evaluations.error) return <ErrorNotice message="Evaluations could not be loaded. Please try again." />
-  const rows = evaluations.data ?? []
+  return <EvaluationsView rows={evaluations.data ?? []} assessments={assessments.data ?? []} status={status} onStatusChange={setStatus} assessmentId={assessmentId} onAssessmentChange={setAssessmentId} />
+}
+
+export function EvaluationsSkeleton() {
+  return <PageSkeleton name="admin-evaluations" fixture={<EvaluationsView rows={mockEvaluations} assessments={mockAssessments} status="" onStatusChange={() => undefined} assessmentId="" onAssessmentChange={() => undefined} />} />
+}
+
+type EvaluationsViewProps = {
+  rows: EvaluationListItem[]
+  assessments: AssessmentSummary[]
+  status: EvaluationStatus | ""
+  onStatusChange: (status: EvaluationStatus | "") => void
+  assessmentId: string
+  onAssessmentChange: (assessmentId: string) => void
+}
+
+function EvaluationsView({ rows, assessments, status, onStatusChange, assessmentId, onAssessmentChange }: EvaluationsViewProps) {
+  const retry = useRetryEvaluation()
   return <div className="space-y-8">
     <PageHeader eyebrow="Post-interview review" title="Evaluations" description="Track evidence-backed reports after completed interviews." />
     <div className="flex flex-col gap-3 rounded-2xl border bg-white p-4 sm:flex-row">
-      <label className="text-sm font-medium">Status<span className="sr-only"> filter</span><select className="mt-2 block h-10 min-w-44 rounded-xl border bg-background px-3 font-normal" value={status} onChange={(event) => setStatus(event.target.value as EvaluationStatus | "")}><option value="">All statuses</option><option value="PENDING">Queued</option><option value="PROCESSING">Processing</option><option value="COMPLETED">Completed</option><option value="FAILED">Failed</option></select></label>
-      <label className="text-sm font-medium">Assessment<span className="sr-only"> filter</span><select className="mt-2 block h-10 min-w-60 rounded-xl border bg-background px-3 font-normal" value={assessmentId} onChange={(event) => setAssessmentId(event.target.value)}><option value="">All assessments</option>{(assessments.data ?? []).map((assessment) => <option key={assessment.id} value={assessment.id}>{assessment.name}</option>)}</select></label>
+      <label className="text-sm font-medium">Status<span className="sr-only"> filter</span><select className="mt-2 block h-10 min-w-44 rounded-xl border bg-background px-3 font-normal" value={status} onChange={(event) => onStatusChange(event.target.value as EvaluationStatus | "")}><option value="">All statuses</option><option value="PENDING">Queued</option><option value="PROCESSING">Processing</option><option value="COMPLETED">Completed</option><option value="FAILED">Failed</option></select></label>
+      <label className="text-sm font-medium">Assessment<span className="sr-only"> filter</span><select className="mt-2 block h-10 min-w-60 rounded-xl border bg-background px-3 font-normal" value={assessmentId} onChange={(event) => onAssessmentChange(event.target.value)}><option value="">All assessments</option>{assessments.map((assessment) => <option key={assessment.id} value={assessment.id}>{assessment.name}</option>)}</select></label>
     </div>
     {retry.error && <Alert variant="destructive"><AlertCircle /><AlertTitle>Retry failed</AlertTitle><AlertDescription>{retry.error.message}</AlertDescription></Alert>}
     {rows.length === 0 ? <EmptyState title="No evaluations found" description="Completed interviews appear here when they enter evaluation." /> : <div className="space-y-3">{rows.map((row) => <Card key={row.id}><CardContent className="grid gap-5 p-5 md:grid-cols-[1.2fr_1fr_auto_auto] md:items-center">

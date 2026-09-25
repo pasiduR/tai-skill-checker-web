@@ -9,31 +9,40 @@ import { Button } from "@/components/ui/button"
 import type { InvitationPreview } from "@/features/invitations/api/invitations"
 import { startAttempt } from "../api/assignments"
 import { useAssignmentPreparation } from "../hooks/useAssignmentPreparation"
+import { mockPreparation } from "@/lib/skeletonFixtures"
+import type { AssignmentPreparation } from "../types"
 import { MicrophoneCheck } from "./MicrophoneCheck"
 
 export function PreparationPage() {
   const { assignmentId = "" } = useParams()
   const preparation = useAssignmentPreparation(assignmentId)
-  const navigate = useNavigate()
   const location = useLocation()
-  const [microphoneReady, setMicrophoneReady] = useState(false)
-  const [microphoneDeviceId, setMicrophoneDeviceId] = useState("")
   const invitation = (location.state as { invitation?: InvitationPreview } | null)?.invitation
   const interrupted = Boolean((location.state as { interrupted?: boolean } | null)?.interrupted)
+
+  if (preparation.isLoading || preparation.isFetching) return <PreparationSkeleton />
+  if (preparation.error || !preparation.data) return <ErrorNotice message={preparation.error?.message ?? "This assessment is unavailable."} />
+  if (preparation.data.status === "COMPLETED") return <Navigate to={`/assessment/${assignmentId}/completed`} replace />
+  return <PreparationView assignmentId={assignmentId} data={preparation.data} invitation={invitation} interrupted={interrupted} />
+}
+
+export function PreparationSkeleton() {
+  return <PageSkeleton name="employee-preparation" fixture={<PreparationView assignmentId="as0" data={mockPreparation} interrupted={false} />} />
+}
+
+function PreparationView({ assignmentId, data, invitation, interrupted }: { assignmentId: string; data: AssignmentPreparation; invitation?: InvitationPreview; interrupted: boolean }) {
+  const navigate = useNavigate()
+  const [microphoneReady, setMicrophoneReady] = useState(false)
+  const [microphoneDeviceId, setMicrophoneDeviceId] = useState("")
   const handleMicrophoneReady = useCallback((ready: boolean, deviceId: string) => {
     setMicrophoneReady(ready)
     setMicrophoneDeviceId(deviceId)
   }, [])
   const start = useMutation({
     mutationFn: () => startAttempt(assignmentId),
-    onSuccess: (connection) => navigate(`/assessment/${assignmentId}/session`, { state: { connection, assessmentTitle: preparation.data?.name, microphoneDeviceId } }),
+    onSuccess: (connection) => navigate(`/assessment/${assignmentId}/session`, { state: { connection, assessmentTitle: data.name, microphoneDeviceId } }),
   })
 
-  if (preparation.isLoading || preparation.isFetching) return <PageSkeleton />
-  if (preparation.error || !preparation.data) return <ErrorNotice message={preparation.error?.message ?? "This assessment is unavailable."} />
-  if (preparation.data.status === "COMPLETED") return <Navigate to={`/assessment/${assignmentId}/completed`} replace />
-
-  const data = preparation.data
   const competencies = data.competencies.length > 0 ? data.competencies : invitation?.assessment.competencies ?? []
   const unavailable = data.attemptsRemaining < 1 || data.status !== "READY"
 
