@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { Assessment, Bell, Evaluation, LayoutDashboard, LiveActivity, LogOut, Menu, PanelLeftClose, PanelLeftOpen, X } from "@/components/ui/icons"
+import { Assessment, Bell, Evaluation, LayoutDashboard, LiveActivity, LogOut, Menu, PanelLeftClose, PanelLeftOpen, Settings, X } from "@/components/ui/icons"
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom"
 import { queryKeys } from "@/api"
 import { BrandMark } from "@/components/shared/BrandMark"
@@ -22,6 +22,7 @@ function pageTitle(pathname: string) {
   if (pathname.startsWith("/admin/evaluations")) return "Evaluations"
   if (pathname.startsWith("/admin/live")) return "Live attempts"
   if (pathname.startsWith("/admin/attempts")) return "Attempt report"
+  if (pathname.startsWith("/admin/settings")) return "Voice agent settings"
   return "Admin workspace"
 }
 
@@ -62,11 +63,13 @@ export function AdminLayout() {
       </nav>
     </div>
     <div className={cn("border-t py-4", sidebarCollapsed && !mobile ? "px-2" : "px-4")}>
-      <div className={cn("flex items-center gap-3", sidebarCollapsed && !mobile ? "justify-center" : "px-2")}>
+      <NavLink to="/admin/settings" className={navClass} title={sidebarCollapsed && !mobile ? "Settings" : undefined}><Settings className="size-[18px]" /><span className={cn(sidebarCollapsed && !mobile && "md:sr-only")}>Settings</span></NavLink>
+      <div className={cn("mt-3 flex items-center gap-2 border-t pt-4", sidebarCollapsed && !mobile ? "justify-center" : "px-2")}>
         <span className="grid size-9 shrink-0 place-items-center rounded-full bg-secondary text-xs font-semibold">{user?.name?.slice(0, 1).toUpperCase() ?? "A"}</span>
         {(!sidebarCollapsed || mobile) && <div className="min-w-0 flex-1"><p className="truncate text-sm font-medium">{user?.name || "Administrator"}</p><p className="truncate text-xs text-muted-foreground">{user?.email}</p></div>}
+        <Button className={cn(sidebarCollapsed && !mobile && "hidden")} size="icon" variant="ghost" aria-label="Sign out" title="Sign out" disabled={logout.isPending} onClick={() => logout.mutate()}><LogOut /></Button>
       </div>
-      <Button className={cn("mt-3", sidebarCollapsed && !mobile ? "w-full px-0" : "w-full justify-start")} size={sidebarCollapsed && !mobile ? "icon" : "sm"} variant="ghost" aria-label="Sign out" title={sidebarCollapsed && !mobile ? "Sign out" : undefined} disabled={logout.isPending} onClick={() => logout.mutate()}><LogOut />{(!sidebarCollapsed || mobile) && "Sign out"}</Button>
+      {sidebarCollapsed && !mobile && <Button className="mt-2 w-full px-0" size="icon" variant="ghost" aria-label="Sign out" title="Sign out" disabled={logout.isPending} onClick={() => logout.mutate()}><LogOut /></Button>}
     </div>
   </>
 

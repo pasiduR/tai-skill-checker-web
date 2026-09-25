@@ -15,4 +15,5 @@ export const queryKeys = {
   attemptInspection: (attemptId: string) => ["admin", "attempts", attemptId] as const,
   observerConnection: (attemptId: string) => ["admin", "attempts", attemptId, "observer"] as const,
   attemptRecording: (attemptId: string) => ["admin", "attempts", attemptId, "recording"] as const,
+  agentSettings: ["admin", "agent-settings"] as const,
 }
