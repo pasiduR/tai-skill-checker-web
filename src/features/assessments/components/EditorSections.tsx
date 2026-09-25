@@ -1,6 +1,8 @@
 import { useState } from "react"
-import { useMutation } from "@tanstack/react-query"
-import { PdfFile, Sparkles, Upload } from "@/components/ui/icons"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { ImageIcon, PdfFile, Sparkles, Trash, Upload } from "@/components/ui/icons"
+import { queryKeys } from "@/api"
+import { CoverImage } from "@/components/shared/CoverImage"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -8,7 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import {
   addCompetency, addRubric, addScenario, generateAssessment, mapScenarioCompetency,
-  processResource, updateCompetency, updateRubric, updateScenario, uploadResource,
+  processResource, removeCoverImage, updateCompetency, updateRubric, updateScenario, uploadCoverImage, uploadResource,
 } from "../api/assessments"
 import type { Assessment, Competency, Rubric, Scenario } from "../types"
 
@@ -77,6 +79,23 @@ export function ScenariosSection({ assessment, refresh }: SectionProps) {
   const [competencyId, setCompetencyId] = useState("")
   const mutation = useMutation({ mutationFn: async () => { const scenario = await addScenario(assessment.id, { title, prompt, followUpGuidance: guidance, position: assessment.scenarios.length + 1 }); await mapScenarioCompetency(assessment.id, { scenarioId: scenario.id, competencyId }); return scenario }, onSuccess: async () => { setTitle(""); setPrompt(""); setGuidance(""); await refresh() } })
   return <div className="space-y-6"><div><h2 className="text-xl font-semibold">Scenarios</h2><p className="mt-1 text-sm text-muted-foreground">Scenarios run in this fixed order. Map every scenario to at least one competency.</p></div><div className="space-y-3">{assessment.scenarios.map((scenario) => <ScenarioEditor key={scenario.id} assessmentId={assessment.id} scenario={scenario} refresh={refresh} />)}</div><Card className="shadow-none"><CardHeader><CardTitle className="text-base">Add scenario</CardTitle></CardHeader><CardContent className="space-y-3"><Input placeholder="Scenario title" value={title} onChange={(e) => setTitle(e.target.value)} /><Textarea rows={5} placeholder="Scenario prompt" value={prompt} onChange={(e) => setPrompt(e.target.value)} /><Textarea rows={3} placeholder="Follow-up guidance" value={guidance} onChange={(e) => setGuidance(e.target.value)} /><select className="h-9 w-full rounded-md border bg-white px-3 text-sm" value={competencyId} onChange={(e) => setCompetencyId(e.target.value)}><option value="">Map to competency</option>{assessment.competencies.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select><MutationMessage error={mutation.error} /><Button loading={mutation.isPending} disabled={!title.trim() || !prompt.trim() || !competencyId} onClick={() => mutation.mutate()}>Add scenario</Button></CardContent></Card></div>
+}
+
+const maxCoverImageBytes = 5 * 1024 * 1024
+
+export function CoverImageSection({ assessment }: { assessment: Assessment }) {
+  const queryClient = useQueryClient()
+  const [file, setFile] = useState<File | null>(null)
+  const [inputKey, setInputKey] = useState(0)
+  const refreshAll = () => queryClient.invalidateQueries({ queryKey: queryKeys.assessments })
+  const upload = useMutation({ mutationFn: async () => { if (!file) throw new Error("Choose an image file."); if (file.size > maxCoverImageBytes) throw new Error("Cover images must be 5 MB or smaller."); return uploadCoverImage(assessment.id, file) }, onSuccess: async () => { setFile(null); setInputKey((key) => key + 1); await refreshAll() } })
+  const remove = useMutation({ mutationFn: () => removeCoverImage(assessment.id), onSuccess: refreshAll })
+  return <Card className="max-w-3xl shadow-none"><CardHeader><CardTitle>Cover image</CardTitle><CardDescription>Shown on the admin overview, the assessment preview, and the employee preparation page. PNG, JPEG, or WebP up to 5 MB.</CardDescription></CardHeader><CardContent className="space-y-4">
+    <div className="aspect-[3/1] overflow-hidden rounded-xl border bg-muted"><CoverImage url={assessment.coverImageUrl} alt="Current cover image" className="size-full object-cover" fallback={<div className="grid size-full place-items-center text-muted-foreground"><div className="flex flex-col items-center gap-2 text-sm"><ImageIcon className="size-6" />{assessment.coverImageUrl ? "Loading cover…" : "No cover image"}</div></div>} /></div>
+    <div className="space-y-2"><Label htmlFor="cover-image">{assessment.coverImageUrl ? "Replace cover image" : "Upload cover image"}</Label><Input key={inputKey} id="cover-image" type="file" accept="image/png,image/jpeg,image/webp" onChange={(event) => { upload.reset(); setFile(event.target.files?.[0] ?? null) }} /></div>
+    <MutationMessage error={upload.error ?? remove.error} success={upload.isSuccess ? "Cover image updated." : remove.isSuccess ? "Cover image removed." : undefined} />
+    <div className="flex flex-wrap gap-2"><Button loading={upload.isPending} disabled={!file || remove.isPending} onClick={() => upload.mutate()}><Upload />{upload.isPending ? "Uploading…" : "Upload cover"}</Button>{assessment.coverImageUrl && <Button variant="outline" loading={remove.isPending} disabled={upload.isPending} onClick={() => remove.mutate()}><Trash />{remove.isPending ? "Removing…" : "Remove"}</Button>}</div>
+  </CardContent></Card>
 }
 
 export function ResourcesSection({ assessment, refresh }: SectionProps) {

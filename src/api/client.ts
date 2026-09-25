@@ -12,7 +12,7 @@ export class ApiError extends Error {
   }
 }
 
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
+async function send(path: string, init?: RequestInit) {
   const response = await fetch(`${API_BASE_URL}${path}`, {
     ...init,
     credentials: "include",
@@ -24,6 +24,11 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     const payload = await response.json().catch(() => ({})) as ErrorPayload
     throw new ApiError(payload.error?.message ?? "The request could not be completed.", response.status, payload.error?.code)
   }
+  return response
+}
+
+async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const response = await send(path, init)
   if (response.status === 204) return undefined as T
   return response.json() as Promise<T>
 }
@@ -36,6 +41,9 @@ export const api = {
   }),
   put: <TInput, TResponse>(path: string, body: TInput) => request<TResponse>(path, {
     method: "PUT",
-    body: JSON.stringify(body),
+    body: body instanceof FormData ? body : JSON.stringify(body),
   }),
+  delete: <TResponse>(path: string) => request<TResponse>(path, { method: "DELETE" }),
+  // Authenticated binary fetch: a plain <img src> cannot send credentials to a cross-site API.
+  blob: async (path: string) => (await send(path)).blob(),
 }

@@ -22,4 +22,9 @@ export const uploadResource = async (assessmentId: string, file: File) => {
   const form = new FormData(); form.set("file", file)
   return (await api.post<FormData, Envelope<Resource>>(`/api/assessments/${assessmentId}/resources`, form)).data
 }
+export const uploadCoverImage = async (assessmentId: string, file: File) => {
+  const form = new FormData(); form.set("file", file)
+  return (await api.put<FormData, Envelope<AssessmentSummary>>(`/api/assessments/${assessmentId}/cover`, form)).data
+}
+export const removeCoverImage = async (assessmentId: string) => (await api.delete<Envelope<AssessmentSummary>>(`/api/assessments/${assessmentId}/cover`)).data
 export const processResource = async (assessmentId: string, resourceId: string) => (await api.post<undefined, Envelope<Resource>>(`/api/assessments/${assessmentId}/resources/${resourceId}/process`)).data

@@ -11,7 +11,7 @@ import { publishAssessment, updateAssessment } from "../api/assessments"
 import { mockAssessment } from "@/lib/skeletonFixtures"
 import { useAssessment } from "../hooks/useAssessment"
 import type { Assessment } from "../types"
-import { AiGenerationSection, CompetenciesSection, ResourcesSection, ScenariosSection } from "./EditorSections"
+import { AiGenerationSection, CompetenciesSection, CoverImageSection, ResourcesSection, ScenariosSection } from "./EditorSections"
 import { OverviewForm } from "./OverviewForm"
 import { PageHeader } from "./PageHeader"
 
@@ -39,7 +39,7 @@ function AssessmentEditorView({ assessment }: { assessment: Assessment }) {
   return <div className="space-y-8"><PageHeader eyebrow="Draft editor" title={assessment.name} description="Build and review the complete assessment before publishing an immutable version." actions={<Button variant="outline" asChild><Link to={`/admin/assessments/${id}`}><Eye />Preview</Link></Button>} />
     <AiGenerationSection assessment={assessment} refresh={refresh} />
     <Tabs defaultValue="overview" className="space-y-6"><TabsList className="h-auto flex-wrap justify-start"><TabsTrigger value="overview">Overview</TabsTrigger><TabsTrigger value="scenarios">Scenarios</TabsTrigger><TabsTrigger value="competencies">Competencies</TabsTrigger><TabsTrigger value="resources">Resources</TabsTrigger><TabsTrigger value="settings">Settings</TabsTrigger></TabsList>
-      <TabsContent value="overview"><OverviewForm initial={{ name: assessment.name, description: assessment.description, preparationInstructions: assessment.preparationInstructions }} submitLabel="Save overview" pending={overview.isPending} error={overview.error?.message} onSubmit={(values) => overview.mutate(values)} /></TabsContent>
+      <TabsContent value="overview" className="space-y-8"><CoverImageSection assessment={assessment} /><OverviewForm initial={{ name: assessment.name, description: assessment.description, preparationInstructions: assessment.preparationInstructions }} submitLabel="Save overview" pending={overview.isPending} error={overview.error?.message} onSubmit={(values) => overview.mutate(values)} /></TabsContent>
       <TabsContent value="scenarios"><ScenariosSection assessment={assessment} refresh={refresh} /></TabsContent>
       <TabsContent value="competencies"><CompetenciesSection assessment={assessment} refresh={refresh} /></TabsContent>
       <TabsContent value="resources"><ResourcesSection assessment={assessment} refresh={refresh} /></TabsContent>

@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { EmptyState, ErrorNotice, InlineSkeleton, PageSkeleton } from "@/components/shared/AsyncState"
+import { CoverImage } from "@/components/shared/CoverImage"
 import { mockAssessment } from "@/lib/skeletonFixtures"
 import { useAssessment } from "../hooks/useAssessment"
 import type { Assessment } from "../types"
@@ -31,6 +32,7 @@ type AssessmentPreview = Pick<Assessment, "preparationInstructions" | "competenc
 function AssessmentDetailView({ assessment, preview, versionLoading }: { assessment: Assessment; preview: AssessmentPreview; versionLoading: boolean }) {
   const id = assessment.id
   return <div className="space-y-8">
+    {assessment.coverImageUrl && <div className="aspect-[4/1] min-h-32 overflow-hidden rounded-2xl border bg-muted"><CoverImage url={assessment.coverImageUrl} alt="" className="size-full object-cover" /></div>}
     <PageHeader eyebrow="Assessment preview" title={assessment.name} description={assessment.description} actions={<><Button variant="outline" asChild><Link to={`/admin/assessments/${id}/edit`}><Edit3 />Edit draft</Link></Button>{assessment.status === "PUBLISHED" && <Button asChild><Link to={`/admin/assessments/${id}/invite`}><Mail />Invite employees</Link></Button>}</>} />
     <div className="flex flex-wrap gap-2"><Badge>{assessment.status}</Badge><Badge variant="outline">{assessment.scenarios.length} scenarios</Badge><Badge variant="outline">{assessment.competencies.length} competencies</Badge>{assessment.latestVersionNumber > 0 && <Badge variant="outline">Published v{assessment.latestVersionNumber}</Badge>}</div>
     {versionLoading && <InlineSkeleton />}

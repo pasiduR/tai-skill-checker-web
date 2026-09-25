@@ -109,7 +109,7 @@ function InviteView({ assessment, employees }: { assessment: AssessmentSummary; 
       <DialogContent>
         <DialogHeader><DialogTitle>Reinvite employee?</DialogTitle><DialogDescription>A new invitation will be sent to {selected?.email}. Their attempt allowance will reset, while prior attempts and reports stay in the audit history.{selected?.hasActiveAttempt ? " The unfinished session will be ended." : ""}</DialogDescription></DialogHeader>
         {reinvite.error && <ErrorNotice message={reinvite.error.message} />}
-        <DialogFooter><Button variant="outline" disabled={reinvite.isPending} onClick={() => setSelected(undefined)}>Cancel</Button><Button loading={reinvite.isPending} disabled={!selected} onClick={() => selected && reinvite.mutate(selected.invitationId)}><RotateCcw />{reinvite.isPending ? "Reinviting…" : "Reinvite and reset"}</Button></DialogFooter>
+        <DialogFooter><Button variant="outline" disabled={reinvite.isPending} onClick={() => setSelected(undefined)}>Cancel</Button><Button loading={reinvite.isPending} disabled={!selected} onClick={() => selected && reinvite.mutate(selected.invitationId)}><RotateCcw />{reinvite.isPending ? "Reinviting" : "Reinvite and reset"}</Button></DialogFooter>
       </DialogContent>
     </Dialog>
   </div>

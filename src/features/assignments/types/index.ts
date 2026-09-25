@@ -10,6 +10,7 @@ export type AssignmentPreparation = {
   name: string
   description: string
   preparationInstructions: string
+  coverImageUrl: string | null
   competencies: CompetencyPreview[]
   attemptsUsed: number
   attemptsRemaining: number
@@ -29,6 +30,7 @@ export type EmployeeAssignmentSummary = {
   assessmentId: string
   name: string
   description: string
+  coverImageUrl: string | null
   updatedAt: string
   attemptsUsed: number
   attemptsRemaining: number

@@ -3,6 +3,7 @@ import { useMutation } from "@tanstack/react-query"
 import { AlertTriangle, ArrowRight, Check, ShieldAlert } from "@/components/ui/icons"
 import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom"
 import { ErrorNotice } from "@/components/shared/AsyncState"
+import { CoverImage } from "@/components/shared/CoverImage"
 import { PageLoader } from "@/components/ui/bars-loader"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
@@ -43,6 +44,7 @@ function PreparationView({ assignmentId, data, invitation, interrupted }: { assi
   const unavailable = data.attemptsRemaining < 1 || data.status !== "READY"
 
   return <div className="mx-auto max-w-4xl space-y-8">
+    {data.coverImageUrl && <div className="aspect-[3/1] min-h-32 overflow-hidden rounded-3xl bg-muted"><CoverImage url={data.coverImageUrl} alt="" className="size-full object-cover" /></div>}
     <header className="max-w-3xl"><div className="flex flex-wrap items-center gap-3"><p className="eyebrow">Assessment preparation</p><Badge variant="secondary"><span className="font-mono">{data.attemptsRemaining}</span> attempt{data.attemptsRemaining === 1 ? "" : "s"} remaining</Badge></div><h1 className="font-display mt-4 text-4xl leading-tight sm:text-5xl">{data.name}</h1><p className="mt-5 text-base leading-7 text-muted-foreground">{data.description}</p></header>
 
     <div className="grid gap-8 lg:grid-cols-[1fr_0.9fr]">

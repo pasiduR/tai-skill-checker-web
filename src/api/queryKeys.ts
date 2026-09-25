@@ -16,4 +16,5 @@ export const queryKeys = {
   observerConnection: (attemptId: string) => ["admin", "attempts", attemptId, "observer"] as const,
   attemptRecording: (attemptId: string) => ["admin", "attempts", attemptId, "recording"] as const,
   agentSettings: ["admin", "agent-settings"] as const,
+  coverImage: (url: string) => ["cover-image", url] as const,
 }

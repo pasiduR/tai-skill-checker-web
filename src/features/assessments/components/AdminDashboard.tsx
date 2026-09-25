@@ -1,6 +1,7 @@
 import { ArrowRight, Assessment, CheckCircle2, Draft, Evaluation, LiveActivity, Plus } from "@/components/ui/icons"
 import { Link } from "react-router-dom"
 import { ErrorNotice, PageSkeleton } from "@/components/shared/AsyncState"
+import { CoverImage } from "@/components/shared/CoverImage"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/features/auth"
 import { useActiveAttempts } from "@/features/attempts"
@@ -89,7 +90,7 @@ function AdminDashboardView({ name, assessments, activeAttempts, evaluations }: 
         <section aria-labelledby="recent-assessments">
           <div className="mb-3 flex items-center justify-between gap-4"><h2 id="recent-assessments" className="text-lg font-semibold">Recent assessments</h2><Link to="/admin/assessments" className="overview-primary-text inline-flex items-center gap-1 text-xs font-semibold hover:underline">See all <ArrowRight className="size-3.5" /></Link></div>
           {featured.length === 0 ? <div className="overview-card rounded-2xl px-5 py-10 text-center"><p className="text-sm text-muted-foreground">No assessments yet.</p><Button className="mt-4" size="sm" variant="outline" asChild><Link to="/admin/assessments/new">Create assessment</Link></Button></div> : <div className="grid grid-flow-dense gap-3 md:grid-cols-3">{featured.map((assessment, index) => <Link key={assessment.id} to={`/admin/assessments/${assessment.id}`} {...prefetch(assessmentQuery(assessment.id))} className="group overview-card overflow-hidden rounded-2xl transition-colors hover:border-primary/40">
-            <div className={cn("relative grid h-28 place-items-center overflow-hidden", coverStyles[index % coverStyles.length])}><span className="grid size-12 place-items-center rounded-full bg-white"><Assessment className="size-6 text-foreground" /></span></div>
+            <div className={cn("relative grid h-28 place-items-center overflow-hidden", coverStyles[index % coverStyles.length])}><CoverImage url={assessment.coverImageUrl} className="absolute inset-0 size-full object-cover transition-transform duration-300 group-hover:scale-[1.03]" fallback={<span className="grid size-12 place-items-center rounded-full bg-white"><Assessment className="size-6 text-foreground" /></span>} /></div>
             <div className="p-4"><span className={cn("inline-flex rounded-full px-2 py-1 text-[10px] font-semibold", statusStyles[assessment.status])}>{assessment.status}</span><h3 className="mt-2 line-clamp-2 min-h-10 text-sm font-semibold leading-5">{assessment.name}</h3><p className="mt-3 text-[11px] text-muted-foreground">Updated {new Date(assessment.updatedAt).toLocaleDateString()}</p></div>
           </Link>)}</div>}
         </section>

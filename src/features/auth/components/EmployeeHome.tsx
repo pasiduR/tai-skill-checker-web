@@ -3,6 +3,7 @@ import { ArrowRight, CheckCircle2, Clock3, Mail, RotateCcw } from "@/components/
 import { Link } from "react-router-dom"
 import { queryKeys } from "@/api"
 import { EmptyState, ErrorNotice } from "@/components/shared/AsyncState"
+import { CoverImage } from "@/components/shared/CoverImage"
 import { PageLoader } from "@/components/ui/bars-loader"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -40,7 +41,8 @@ function EmployeeHomeView({ assignments }: { assignments: EmployeeAssignmentSumm
         const state = assignmentState(assignment)
         const StateIcon = state.icon
         const canStart = assignment.status === "READY" && assignment.attemptsRemaining > 0 && !assignment.hasActiveAttempt
-        return <Card key={assignment.assignmentId} className="flex flex-col shadow-none">
+        return <Card key={assignment.assignmentId} className="flex flex-col overflow-hidden shadow-none">
+          {assignment.coverImageUrl && <div className="h-36 bg-muted"><CoverImage url={assignment.coverImageUrl} alt="" className="size-full object-cover" /></div>}
           <CardHeader>
             <div className="flex items-start justify-between gap-4">
               <CardTitle className="text-xl">{assignment.name}</CardTitle>

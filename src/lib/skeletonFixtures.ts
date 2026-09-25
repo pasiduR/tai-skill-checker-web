@@ -7,13 +7,13 @@ import type { EmployeeInvitation } from "@/features/invitations/api/invitations"
 
 const now = new Date().toISOString()
 
-const featuredAssessment: AssessmentSummary = { id: "a1", name: "Customer communication skills", description: "A structured voice assessment covering empathy, clarity, and de-escalation with customers.", preparationInstructions: "", status: "PUBLISHED", latestVersionNumber: 2, currentPublishedVersionId: "v2", createdAt: now, updatedAt: now }
+const featuredAssessment: AssessmentSummary = { id: "a1", name: "Customer communication skills", description: "A structured voice assessment covering empathy, clarity, and de-escalation with customers.", preparationInstructions: "", status: "PUBLISHED", latestVersionNumber: 2, currentPublishedVersionId: "v2", coverImageUrl: null, createdAt: now, updatedAt: now }
 
 export const mockAssessments: AssessmentSummary[] = [
   featuredAssessment,
-  { id: "a2", name: "Sales discovery conversation", description: "Evaluates questioning technique and needs analysis in an early-stage sales call.", preparationInstructions: "", status: "DRAFT", latestVersionNumber: 0, currentPublishedVersionId: null, createdAt: now, updatedAt: now },
-  { id: "a3", name: "Incident escalation handling", description: "Checks how employees communicate during a production incident.", preparationInstructions: "", status: "PUBLISHED", latestVersionNumber: 1, currentPublishedVersionId: "v1", createdAt: now, updatedAt: now },
-  { id: "a4", name: "Team leadership check-in", description: "Assesses coaching and feedback conversations with direct reports.", preparationInstructions: "", status: "DRAFT", latestVersionNumber: 0, currentPublishedVersionId: null, createdAt: now, updatedAt: now },
+  { id: "a2", name: "Sales discovery conversation", description: "Evaluates questioning technique and needs analysis in an early-stage sales call.", preparationInstructions: "", status: "DRAFT", latestVersionNumber: 0, currentPublishedVersionId: null, coverImageUrl: null, createdAt: now, updatedAt: now },
+  { id: "a3", name: "Incident escalation handling", description: "Checks how employees communicate during a production incident.", preparationInstructions: "", status: "PUBLISHED", latestVersionNumber: 1, currentPublishedVersionId: "v1", coverImageUrl: null, createdAt: now, updatedAt: now },
+  { id: "a4", name: "Team leadership check-in", description: "Assesses coaching and feedback conversations with direct reports.", preparationInstructions: "", status: "DRAFT", latestVersionNumber: 0, currentPublishedVersionId: null, coverImageUrl: null, createdAt: now, updatedAt: now },
 ]
 
 export const mockAssessment: Assessment = {

@@ -9,6 +9,7 @@ export type AssessmentSummary = {
   status: AssessmentStatus
   latestVersionNumber: number
   currentPublishedVersionId: string | null
+  coverImageUrl: string | null
   createdAt: string
   updatedAt: string
 }
