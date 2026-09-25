@@ -1,6 +1,7 @@
 import { Edit3, Mail } from "@/components/ui/icons"
 import { useQuery } from "@tanstack/react-query"
 import { Link, useParams } from "react-router-dom"
+import { queryKeys } from "@/api"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -15,7 +16,7 @@ export function AssessmentDetailPage() {
   const { id = "" } = useParams()
   const query = useAssessment(id)
   const publishedVersionId = query.data?.currentPublishedVersionId
-  const versionQuery = useQuery({ queryKey: ["assessments", id, "version", publishedVersionId], queryFn: () => getAssessmentVersion(id, publishedVersionId!), enabled: Boolean(publishedVersionId) })
+  const versionQuery = useQuery({ queryKey: queryKeys.assessmentVersion(id, publishedVersionId), queryFn: () => getAssessmentVersion(id, publishedVersionId!), enabled: Boolean(publishedVersionId), staleTime: Infinity })
   if (query.isLoading) return <AssessmentDetailSkeleton />
   if (query.error || !query.data) return <ErrorNotice message={query.error?.message ?? "Assessment not found."} />
   return <AssessmentDetailView assessment={query.data} preview={versionQuery.data ?? query.data} versionLoading={versionQuery.isLoading} />

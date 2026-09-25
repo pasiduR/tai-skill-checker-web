@@ -3,6 +3,7 @@ export const queryKeys = {
   membership: (userId?: string) => ["session", "membership", userId] as const,
   assessments: ["assessments"] as const,
   assessment: (id: string) => ["assessments", id] as const,
+  assessmentVersion: (id: string, versionId?: string | null) => ["assessments", id, "version", versionId] as const,
   invitation: (token: string) => ["invitations", token] as const,
   assessmentInvitations: (assessmentId: string) => ["assessments", assessmentId, "invitations"] as const,
   assignmentPreparation: (assignmentId: string) => ["assignments", assignmentId, "preparation"] as const,

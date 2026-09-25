@@ -9,7 +9,9 @@ import { cn } from "@/lib/utils"
 import { mockActiveAttempts, mockAssessments, mockEvaluations } from "@/lib/skeletonFixtures"
 import type { ActiveAttempt } from "@/features/attempts"
 import type { EvaluationListItem } from "@/features/evaluations"
-import { useAssessments } from "../hooks/useAssessment"
+import { usePrefetchOnIntent } from "@/lib/prefetch"
+import { attemptInspectionQuery } from "@/features/attempts"
+import { assessmentQuery, useAssessments } from "../hooks/useAssessment"
 import type { AssessmentSummary } from "../types"
 
 const coverStyles = [
@@ -40,6 +42,7 @@ export function AdminDashboardSkeleton() {
 }
 
 function AdminDashboardView({ name, assessments, activeAttempts, evaluations }: { name: string; assessments: AssessmentSummary[]; activeAttempts: ActiveAttempt[]; evaluations: EvaluationListItem[] }) {
+  const prefetch = usePrefetchOnIntent()
   const published = assessments.filter((item) => item.status === "PUBLISHED").length
   const drafts = assessments.filter((item) => item.status === "DRAFT").length
   const completed = evaluations.filter((item) => item.status === "COMPLETED").length
@@ -85,7 +88,7 @@ function AdminDashboardView({ name, assessments, activeAttempts, evaluations }: 
 
         <section aria-labelledby="recent-assessments">
           <div className="mb-3 flex items-center justify-between gap-4"><h2 id="recent-assessments" className="text-lg font-semibold">Recent assessments</h2><Link to="/admin/assessments" className="overview-primary-text inline-flex items-center gap-1 text-xs font-semibold hover:underline">See all <ArrowRight className="size-3.5" /></Link></div>
-          {featured.length === 0 ? <div className="overview-card rounded-2xl px-5 py-10 text-center"><p className="text-sm text-muted-foreground">No assessments yet.</p><Button className="mt-4" size="sm" variant="outline" asChild><Link to="/admin/assessments/new">Create assessment</Link></Button></div> : <div className="grid grid-flow-dense gap-3 md:grid-cols-3">{featured.map((assessment, index) => <Link key={assessment.id} to={`/admin/assessments/${assessment.id}`} className="group overview-card overflow-hidden rounded-2xl transition-colors hover:border-primary/40">
+          {featured.length === 0 ? <div className="overview-card rounded-2xl px-5 py-10 text-center"><p className="text-sm text-muted-foreground">No assessments yet.</p><Button className="mt-4" size="sm" variant="outline" asChild><Link to="/admin/assessments/new">Create assessment</Link></Button></div> : <div className="grid grid-flow-dense gap-3 md:grid-cols-3">{featured.map((assessment, index) => <Link key={assessment.id} to={`/admin/assessments/${assessment.id}`} {...prefetch(assessmentQuery(assessment.id))} className="group overview-card overflow-hidden rounded-2xl transition-colors hover:border-primary/40">
             <div className={cn("relative grid h-28 place-items-center overflow-hidden", coverStyles[index % coverStyles.length])}><span className="grid size-12 place-items-center rounded-full bg-white"><Assessment className="size-6 text-foreground" /></span></div>
             <div className="p-4"><span className={cn("inline-flex rounded-full px-2 py-1 text-[10px] font-semibold", statusStyles[assessment.status])}>{assessment.status}</span><h3 className="mt-2 line-clamp-2 min-h-10 text-sm font-semibold leading-5">{assessment.name}</h3><p className="mt-3 text-[11px] text-muted-foreground">Updated {new Date(assessment.updatedAt).toLocaleDateString()}</p></div>
           </Link>)}</div>}
@@ -93,7 +96,7 @@ function AdminDashboardView({ name, assessments, activeAttempts, evaluations }: 
 
         <section className="overview-card overflow-hidden rounded-2xl" aria-labelledby="assessment-library">
           <div className="flex items-center justify-between border-b px-5 py-4"><h2 id="assessment-library" className="font-semibold">Assessment library</h2><Button size="sm" variant="ghost" asChild><Link to="/admin/assessments/new"><Plus />New</Link></Button></div>
-          {recent.length === 0 ? <p className="px-5 py-8 text-center text-sm text-muted-foreground">Your assessments will appear here.</p> : <div className="divide-y">{recent.slice(0, 4).map((assessment) => <Link key={assessment.id} to={`/admin/assessments/${assessment.id}`} className="overview-row grid gap-3 px-5 py-3.5 transition-colors sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-center">
+          {recent.length === 0 ? <p className="px-5 py-8 text-center text-sm text-muted-foreground">Your assessments will appear here.</p> : <div className="divide-y">{recent.slice(0, 4).map((assessment) => <Link key={assessment.id} to={`/admin/assessments/${assessment.id}`} {...prefetch(assessmentQuery(assessment.id))} className="overview-row grid gap-3 px-5 py-3.5 transition-colors sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-center">
             <div className="min-w-0"><p className="truncate text-sm font-semibold">{assessment.name}</p><p className="mt-0.5 truncate text-xs text-muted-foreground">{assessment.description || "No description added"}</p></div><span className={cn("w-fit rounded-full px-2 py-1 text-[10px] font-semibold", statusStyles[assessment.status])}>{assessment.status}</span><ArrowRight className="hidden size-4 text-muted-foreground sm:block" />
           </Link>)}</div>}
         </section>
@@ -116,7 +119,7 @@ function AdminDashboardView({ name, assessments, activeAttempts, evaluations }: 
 
         <section className="overview-card overflow-hidden rounded-3xl" aria-labelledby="review-queue-heading">
           <div className="flex items-center justify-between px-5 py-4"><div><h2 id="review-queue-heading" className="font-semibold">Review queue</h2><p className="mt-1 text-xs text-muted-foreground">Latest employee evaluations</p></div><span className="overview-primary-soft grid size-8 place-items-center rounded-full"><Evaluation className="size-4" /></span></div>
-          {reviewQueue.length === 0 ? <p className="border-t px-5 py-8 text-center text-sm text-muted-foreground">No evaluations yet.</p> : <div className="divide-y border-t">{reviewQueue.map((evaluation) => <Link key={evaluation.id} to={`/admin/attempts/${evaluation.attemptId}`} className="overview-row flex items-center gap-3 px-5 py-3 transition-colors">
+          {reviewQueue.length === 0 ? <p className="border-t px-5 py-8 text-center text-sm text-muted-foreground">No evaluations yet.</p> : <div className="divide-y border-t">{reviewQueue.map((evaluation) => <Link key={evaluation.id} to={`/admin/attempts/${evaluation.attemptId}`} {...prefetch(attemptInspectionQuery(evaluation.attemptId))} className="overview-row flex items-center gap-3 px-5 py-3 transition-colors">
             <span className="overview-stat-icon grid size-9 shrink-0 place-items-center rounded-full text-xs font-semibold">{(evaluation.employeeName || evaluation.employeeEmail).slice(0, 1).toUpperCase()}</span><div className="min-w-0 flex-1"><p className="truncate text-xs font-semibold">{evaluation.employeeName || evaluation.employeeEmail}</p><p className="mt-0.5 truncate text-[10px] text-muted-foreground">{evaluation.assessmentName}</p></div><span className="overview-primary-text text-[10px] font-semibold">{evaluation.status}</span>
           </Link>)}</div>}
           <Link to="/admin/evaluations" className="overview-primary-soft m-4 flex h-9 items-center justify-center rounded-xl text-xs font-semibold transition-colors">See all evaluations</Link>

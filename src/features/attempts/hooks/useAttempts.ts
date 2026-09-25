@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query"
+import { queryOptions, useQuery } from "@tanstack/react-query"
 import { queryKeys } from "@/api"
 import { createObserverConnection, getAttemptInspection, getAttemptRecording, listActiveAttempts } from "../api/attempts"
 import { shouldPollAttemptInspection } from "../polling"
@@ -9,9 +9,13 @@ export const useActiveAttempts = () => useQuery({
   refetchInterval: 5_000,
 })
 
-export const useAttemptInspection = (attemptId: string, live = false) => useQuery({
+export const attemptInspectionQuery = (attemptId: string) => queryOptions({
   queryKey: queryKeys.attemptInspection(attemptId),
   queryFn: () => getAttemptInspection(attemptId),
+})
+
+export const useAttemptInspection = (attemptId: string, live = false) => useQuery({
+  ...attemptInspectionQuery(attemptId),
   enabled: Boolean(attemptId),
   refetchInterval: live ? 2_000 : (query) => {
     return shouldPollAttemptInspection(query.state.data) ? 5_000 : false
