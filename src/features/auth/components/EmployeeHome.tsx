@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { ArrowRight, CheckCircle2, Clock3, RotateCcw } from "lucide-react"
+import { ArrowRight, CheckCircle2, Clock3, RotateCcw } from "@/components/ui/icons"
 import { Link } from "react-router-dom"
 import { queryKeys } from "@/api"
 import { EmptyState, ErrorNotice, PageSkeleton } from "@/components/shared/AsyncState"

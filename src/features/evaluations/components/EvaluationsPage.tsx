@@ -1,4 +1,4 @@
-import { AlertCircle, Clock3, RefreshCw } from "lucide-react"
+import { AlertCircle, Clock3, RefreshCw } from "@/components/ui/icons"
 import { Link } from "react-router-dom"
 import { useState } from "react"
 import { EmptyState, ErrorNotice, PageSkeleton } from "@/components/shared/AsyncState"

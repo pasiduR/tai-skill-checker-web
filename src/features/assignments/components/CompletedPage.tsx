@@ -1,4 +1,4 @@
-import { CheckCircle2, LockKeyhole } from "lucide-react"
+import { CheckCircle2, LockKeyhole } from "@/components/ui/icons"
 import { Navigate, useParams } from "react-router-dom"
 import { ErrorNotice, PageSkeleton } from "@/components/shared/AsyncState"
 import { useAssignmentPreparation } from "../hooks/useAssignmentPreparation"

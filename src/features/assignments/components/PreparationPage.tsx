@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react"
 import { useMutation } from "@tanstack/react-query"
-import { AlertTriangle, ArrowRight, Check, ShieldAlert } from "lucide-react"
+import { AlertTriangle, ArrowRight, Check, ShieldAlert } from "@/components/ui/icons"
 import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom"
 import { ErrorNotice, PageSkeleton } from "@/components/shared/AsyncState"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"

@@ -10,7 +10,7 @@ import {
   useTranscriptions,
   useVoiceAssistant,
 } from "@livekit/components-react"
-import { Mic, MicOff, PhoneOff, ShieldCheck } from "lucide-react"
+import { Mic, MicOff, PhoneOff, ShieldCheck } from "@/components/ui/icons"
 import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom"
 import { ConnectionState, Track } from "livekit-client"
 import { queryKeys } from "@/api"

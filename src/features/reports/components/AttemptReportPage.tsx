@@ -1,4 +1,4 @@
-import { AlertCircle, ArrowLeft, CheckCircle2, Clock3, ExternalLink, GraduationCap, Lightbulb, RefreshCw, Volume2 } from "lucide-react"
+import { AlertCircle, ArrowLeft, CheckCircle2, Clock3, ExternalLink, GraduationCap, Lightbulb, RefreshCw, Volume2 } from "@/components/ui/icons"
 import { Link, useParams } from "react-router-dom"
 import { EmptyState, ErrorNotice, PageSkeleton } from "@/components/shared/AsyncState"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"

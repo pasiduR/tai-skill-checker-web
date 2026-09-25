@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { ArrowRight, CalendarClock, CheckCircle2, LockKeyhole, LogOut } from "lucide-react"
+import { ArrowRight, CalendarClock, CheckCircle2, LockKeyhole, LogOut } from "@/components/ui/icons"
 import { Link, Navigate, useNavigate, useParams, useSearchParams } from "react-router-dom"
 import { queryKeys } from "@/api"
 import { BrandMark } from "@/components/shared/BrandMark"

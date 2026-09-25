@@ -1,4 +1,4 @@
-import { Edit3, Mail } from "lucide-react"
+import { Edit3, Mail } from "@/components/ui/icons"
 import { useQuery } from "@tanstack/react-query"
 import { Link, useParams } from "react-router-dom"
 import { Badge } from "@/components/ui/badge"

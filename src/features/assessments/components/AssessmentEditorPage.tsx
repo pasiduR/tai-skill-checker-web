@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { Eye, Send } from "lucide-react"
+import { Eye, Send } from "@/components/ui/icons"
 import { Link, useParams } from "react-router-dom"
 import { queryKeys } from "@/api"
 import { ErrorNotice, PageSkeleton } from "@/components/shared/AsyncState"

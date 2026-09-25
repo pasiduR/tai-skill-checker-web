@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
-import { Mail, ShieldCheck } from "lucide-react"
+import { Mail, ShieldCheck } from "@/components/ui/icons"
 import { useForm } from "react-hook-form"
 import { Navigate, useSearchParams } from "react-router-dom"
 import { z } from "zod"

@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { CheckCircle2, Mail, RotateCcw, XCircle } from "lucide-react"
+import { CheckCircle2, Mail, RotateCcw, XCircle } from "@/components/ui/icons"
 import { Link, useParams } from "react-router-dom"
 import { queryKeys } from "@/api"
 import { ErrorNotice, PageSkeleton } from "@/components/shared/AsyncState"

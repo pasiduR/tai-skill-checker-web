@@ -1,4 +1,4 @@
-import { Plus } from "lucide-react"
+import { Plus } from "@/components/ui/icons"
 import { Link } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"

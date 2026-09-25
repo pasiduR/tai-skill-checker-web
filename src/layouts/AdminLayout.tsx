@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { Activity, Bell, ClipboardCheck, LayoutDashboard, LogOut, Menu, PanelLeftClose, PanelLeftOpen, PanelsTopLeft, X } from "lucide-react"
+import { Assessment, Bell, Evaluation, LayoutDashboard, LiveActivity, LogOut, Menu, PanelLeftClose, PanelLeftOpen, X } from "@/components/ui/icons"
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom"
 import { queryKeys } from "@/api"
 import { BrandMark } from "@/components/shared/BrandMark"
@@ -10,9 +10,9 @@ import { cn } from "@/lib/utils"
 
 const navigation = [
   { to: "/admin", label: "Overview", icon: LayoutDashboard, end: true },
-  { to: "/admin/assessments", label: "Assessments", icon: PanelsTopLeft },
-  { to: "/admin/evaluations", label: "Evaluations", icon: ClipboardCheck },
-  { to: "/admin/live", label: "Live attempts", icon: Activity },
+  { to: "/admin/assessments", label: "Assessments", icon: Assessment },
+  { to: "/admin/evaluations", label: "Evaluations", icon: Evaluation },
+  { to: "/admin/live", label: "Live attempts", icon: LiveActivity },
 ]
 
 function pageTitle(pathname: string) {
@@ -74,8 +74,8 @@ export function AdminLayout() {
     <aside className={cn("fixed inset-y-0 left-0 z-30 hidden flex-col bg-[#f4f4f3] transition-[width] duration-300 md:flex", sidebarCollapsed ? "w-[72px]" : "w-60")}>{sidebar()}</aside>
     {mobileNavigationOpen && <div className="fixed inset-0 z-40 md:hidden"><button className="absolute inset-0 bg-black/30 backdrop-blur-[2px]" aria-label="Close navigation" onClick={() => setMobileNavigationOpen(false)} /><aside className="relative flex h-full w-[min(20rem,88vw)] flex-col bg-white shadow-xl">{sidebar(true)}</aside></div>}
     <div className={cn("min-w-0 transition-[padding] duration-300", sidebarCollapsed ? "md:pl-[72px]" : "md:pl-60")}>
-      <div className="min-h-screen overflow-hidden bg-white md:mt-2 md:min-h-[calc(100vh-0.5rem)] md:rounded-tl-2xl md:border-l md:border-t">
-        <header className="sticky top-0 z-20 border-b bg-white/95 backdrop-blur">
+      <div className="min-h-screen bg-white md:mt-2 md:min-h-[calc(100vh-0.5rem)] md:rounded-tl-2xl md:border-l md:border-t">
+        <header className="sticky top-0 z-20 border-b bg-white/95 backdrop-blur md:rounded-tl-2xl">
           <div className="flex h-[64px] items-center gap-3 px-4 sm:px-6 lg:px-8">
             <Button className="md:hidden" size="icon" variant="ghost" aria-label="Open navigation" onClick={() => setMobileNavigationOpen(true)}><Menu /></Button>
             <Button className="hidden md:inline-flex" size="icon" variant="ghost" aria-label={sidebarCollapsed ? "Expand navigation" : "Collapse navigation"} onClick={() => setSidebarCollapsed((value) => !value)}>{sidebarCollapsed ? <PanelLeftOpen /> : <PanelLeftClose />}</Button>

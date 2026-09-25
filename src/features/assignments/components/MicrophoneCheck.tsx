@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { Mic, RefreshCw } from "lucide-react"
+import { Mic, RefreshCw } from "@/components/ui/icons"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Progress } from "@/components/ui/progress"

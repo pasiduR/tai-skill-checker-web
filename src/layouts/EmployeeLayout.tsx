@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { LogOut } from "lucide-react"
+import { LogOut } from "@/components/ui/icons"
 import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import { BrandMark } from "@/components/shared/BrandMark"
 import { Button } from "@/components/ui/button"

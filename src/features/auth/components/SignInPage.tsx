@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { AudioWaveform, CheckCircle2, ShieldCheck } from "lucide-react"
+import { CheckCircle2, ShieldCheck, VoiceActivity } from "@/components/ui/icons"
 import { useForm } from "react-hook-form"
 import { Navigate, useLocation, useNavigate } from "react-router-dom"
 import { z } from "zod"
@@ -37,7 +37,7 @@ export function SignInPage() {
         <p className="mt-7 max-w-lg text-lg leading-8 text-[#a8acb3]">Structured voice assessments turn realistic conversations into clear, evidence backed skill reports.</p>
       </div>
       <div className="relative z-10 grid max-w-xl grid-cols-3 gap-3">
-        {[{ icon: AudioWaveform, label: "Voice first" }, { icon: ShieldCheck, label: "Private" }, { icon: CheckCircle2, label: "Evidence backed" }].map(({ icon: Icon, label }) => <div key={label} className="rounded-3xl bg-[#16181c] p-5 text-white"><Icon className="mb-6 size-5 text-primary" /><p className="text-sm font-medium">{label}</p></div>)}
+        {[{ icon: VoiceActivity, label: "Voice first" }, { icon: ShieldCheck, label: "Private" }, { icon: CheckCircle2, label: "Evidence backed" }].map(({ icon: Icon, label }) => <div key={label} className="rounded-3xl bg-[#16181c] p-5 text-white"><Icon className="mb-6 size-5 text-primary" /><p className="text-sm font-medium">{label}</p></div>)}
       </div>
       <div className="absolute -right-28 top-16 size-96 rounded-full border border-white/10" aria-hidden="true" /><div className="absolute -right-5 top-44 size-52 rounded-full bg-primary" aria-hidden="true" />
     </section>
