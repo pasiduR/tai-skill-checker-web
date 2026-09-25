@@ -7,7 +7,7 @@
 :root {
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   color: #0a0b0d;
-  background: #ffffff;
+  background: #f4f4f3;
   font-synthesis: none;
   --radius: 0.75rem;
   --background: #ffffff;
@@ -82,4 +82,25 @@
   .page-shell { width: 100%; max-width: 1120px; margin-inline: auto; padding-inline: clamp(1rem, 2.25vw, 2rem); }
   .workspace-page { width: 100%; max-width: 1180px; margin-inline: auto; }
   .eyebrow { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: #7c828a; }
+  .dashboard-enter { animation: dashboard-enter 420ms ease-out both; }
+  .metric-card { animation: metric-enter 420ms ease-out both; }
+}
+
+@keyframes dashboard-enter {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes metric-enter {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

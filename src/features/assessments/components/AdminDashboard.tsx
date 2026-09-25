@@ -1,35 +1,90 @@
-import { ArrowRight, CheckCircle2, CircleDashed, Plus, Sparkles } from "lucide-react"
+import { Activity, ArrowRight, CheckCircle2, CircleDashed, ClipboardCheck, FileArchive, PanelsTopLeft, Plus } from "lucide-react"
 import { Link } from "react-router-dom"
-import { Button } from "@/components/ui/button"
+import { ErrorNotice, PageSkeleton } from "@/components/shared/AsyncState"
 import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { PageSkeleton } from "@/components/shared/AsyncState"
+import { Button } from "@/components/ui/button"
+import { useAuth } from "@/features/auth"
+import { useActiveAttempts } from "@/features/attempts"
+import { useEvaluations } from "@/features/evaluations"
+import { cn } from "@/lib/utils"
 import { useAssessments } from "../hooks/useAssessment"
 
+const statusColors = { PUBLISHED: "bg-emerald-500", DRAFT: "bg-amber-400", ARCHIVED: "bg-slate-400" } as const
+
 export function AdminDashboard() {
-  const query = useAssessments()
-  if (query.isLoading) return <PageSkeleton />
-  const assessments = query.data ?? []
+  const auth = useAuth()
+  const assessmentsQuery = useAssessments()
+  const attemptsQuery = useActiveAttempts()
+  const evaluationsQuery = useEvaluations({})
+
+  if (assessmentsQuery.isLoading || attemptsQuery.isLoading || evaluationsQuery.isLoading) return <PageSkeleton />
+  if (assessmentsQuery.error || attemptsQuery.error || evaluationsQuery.error) return <ErrorNotice message="The operations overview could not be loaded. Please try again." />
+
+  const assessments = assessmentsQuery.data ?? []
+  const activeAttempts = attemptsQuery.data ?? []
+  const evaluations = evaluationsQuery.data ?? []
   const published = assessments.filter((item) => item.status === "PUBLISHED").length
+  const drafts = assessments.filter((item) => item.status === "DRAFT").length
+  const archived = assessments.filter((item) => item.status === "ARCHIVED").length
+  const reviewReady = evaluations.filter((item) => item.status === "COMPLETED").length
+  const awaitingReview = evaluations.filter((item) => item.status === "PENDING" || item.status === "PROCESSING").length
+  const name = auth.session?.user.name?.split(" ")[0] || "Administrator"
+  const recent = [...assessments].sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()).slice(0, 5)
   const metrics = [
-    { label: "Total assessments", value: assessments.length, icon: Sparkles },
-    { label: "Published", value: published, icon: CheckCircle2 },
-    { label: "Drafts", value: assessments.length - published, icon: CircleDashed },
+    { label: "Total assessments", description: "All configured skill checks", value: assessments.length, icon: PanelsTopLeft, to: "/admin/assessments" },
+    { label: "Published", description: "Available for employee invitations", value: published, icon: CheckCircle2, to: "/admin/assessments" },
+    { label: "Drafts", description: "Assessments still being prepared", value: drafts, icon: CircleDashed, to: "/admin/assessments" },
+    { label: "Live attempts", description: "Assessments happening now", value: activeAttempts.length, icon: Activity, to: "/admin/live" },
+    { label: "Ready to review", description: "Completed evaluation reports", value: reviewReady, icon: ClipboardCheck, to: "/admin/evaluations" },
+    { label: "Awaiting review", description: "Reports queued or processing", value: awaitingReview, icon: FileArchive, to: "/admin/evaluations" },
   ]
-  const recent = assessments.slice(0, 4)
-  return <div className="space-y-5">
-    <div className="grid gap-5 xl:grid-cols-[minmax(0,1.65fr)_minmax(250px,0.75fr)]">
-      <section className="relative min-h-[280px] overflow-hidden rounded-2xl bg-[#0a0b0d] px-6 py-8 text-white sm:px-8 sm:py-9">
-        <div className="relative z-10 max-w-2xl"><p className="eyebrow !text-primary">Assessment workspace</p><h1 className="font-display mt-3 text-3xl leading-[1.08] sm:text-4xl lg:text-[2.75rem]">Skills become clear when the work feels real.</h1><p className="mt-4 max-w-xl text-sm leading-6 text-[#a8acb3]">Build structured voice assessments, invite your team, and review evidence-backed results from one focused workflow.</p><div className="mt-6 flex flex-wrap gap-2.5"><Button asChild><Link to="/admin/assessments/new"><Plus />New assessment</Link></Button><Button variant="secondary" asChild><Link to="/admin/assessments">View assessments <ArrowRight /></Link></Button></div></div>
-        <div className="absolute -right-16 -top-24 size-64 rounded-full border border-white/10" aria-hidden="true" /><div className="absolute -bottom-24 right-8 size-44 rounded-full bg-primary" aria-hidden="true" />
-      </section>
+  const distribution = [
+    { label: "Published", value: published, color: statusColors.PUBLISHED },
+    { label: "Draft", value: drafts, color: statusColors.DRAFT },
+    { label: "Archived", value: archived, color: statusColors.ARCHIVED },
+  ]
 
-      <Card className="border-[#eef0f3] bg-white"><CardHeader className="flex-row items-center justify-between"><div><p className="eyebrow">At a glance</p><CardTitle className="mt-1 text-lg">Assessment status</CardTitle></div><Sparkles className="size-4 text-primary" /></CardHeader><CardContent className="space-y-1">{metrics.map(({ label, value, icon: Icon }) => <div key={label} className="flex items-center gap-3 border-t py-3 first:border-t-0 first:pt-0"><span className="grid size-9 place-items-center rounded-full bg-secondary"><Icon className="size-4" /></span><p className="flex-1 text-sm text-muted-foreground">{label}</p><p className="font-mono text-xl">{String(value).padStart(2, "0")}</p></div>)}</CardContent></Card>
-    </div>
+  return <div className="dashboard-enter space-y-7 sm:space-y-8">
+    <section className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <p className="text-sm font-medium text-primary">Assessment operations</p>
+        <h1 className="font-display mt-2 text-3xl leading-tight sm:text-4xl">Operations overview</h1>
+        <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">Welcome, {name}. Review assessment activity and move current work forward from one place.</p>
+      </div>
+      <Button asChild><Link to="/admin/assessments/new"><Plus />New assessment</Link></Button>
+    </section>
 
-    <section className="rounded-2xl border bg-white" aria-labelledby="recent-assessments">
-      <div className="flex items-center justify-between gap-4 border-b px-5 py-4 sm:px-6"><div><h2 id="recent-assessments" className="text-base font-semibold">Recent assessments</h2><p className="mt-0.5 text-xs text-muted-foreground">Continue editing or review your latest work.</p></div><Button size="sm" variant="ghost" asChild><Link to="/admin/assessments">See all <ArrowRight /></Link></Button></div>
-      {recent.length === 0 ? <div className="px-5 py-8 text-center"><p className="text-sm text-muted-foreground">No assessments yet. Start with a new draft.</p></div> : <div className="divide-y">{recent.map((assessment) => <Link key={assessment.id} to={`/admin/assessments/${assessment.id}`} className="flex items-center gap-4 px-5 py-3.5 transition-colors hover:bg-muted/70 sm:px-6"><span className="grid size-9 shrink-0 place-items-center rounded-xl bg-secondary"><Sparkles className="size-4 text-primary" /></span><div className="min-w-0 flex-1"><p className="truncate text-sm font-semibold">{assessment.name}</p><p className="mt-0.5 truncate text-xs text-muted-foreground">{assessment.description || "No description added"}</p></div><Badge variant={assessment.status === "PUBLISHED" ? "default" : "secondary"}>{assessment.status}</Badge><ArrowRight className="hidden size-4 text-muted-foreground sm:block" /></Link>)}</div>}
+    <section className="grid grid-flow-dense gap-3 sm:grid-cols-2 xl:grid-cols-3" aria-label="Workspace metrics">
+      {metrics.map(({ label, description, value, icon: Icon, to }, index) => <article key={label} className="metric-card group relative min-h-40 overflow-hidden rounded-2xl border bg-white p-5 transition duration-300 hover:-translate-y-0.5 hover:border-[#a8acb3] hover:shadow-[0_8px_24px_rgba(10,11,13,0.06)]" style={{ animationDelay: `${index * 45}ms` }}>
+        <div className="flex items-start justify-between gap-4"><div><h2 className="font-semibold">{label}</h2><p className="mt-1 text-sm leading-5 text-muted-foreground">{description}</p></div><Icon className="size-5 shrink-0 transition-transform duration-300 group-hover:scale-110" /></div>
+        <p className="font-mono mt-5 text-2xl">{value}</p>
+        <Link to={to} className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold underline-offset-4 hover:underline">View details <ArrowRight className="size-3.5" /><span className="sr-only">for {label}</span></Link>
+      </article>)}
+    </section>
+
+    <section aria-labelledby="workspace-activity">
+      <h2 id="workspace-activity" className="text-xl font-medium">Workspace activity</h2>
+      <div className="mt-4 grid gap-3 xl:grid-cols-[minmax(0,1.35fr)_minmax(320px,0.85fr)]">
+        <article className="rounded-2xl border bg-white p-5 sm:p-6">
+          <div><h3 className="font-semibold">Assessment mix</h3><p className="mt-1 text-sm text-muted-foreground">Current assessment status across the workspace</p></div>
+          <div className="mt-8 space-y-6">
+            {distribution.map(({ label, value, color }) => { const percentage = assessments.length ? Math.round((value / assessments.length) * 100) : 0; return <div key={label}>
+              <div className="mb-2 flex items-center justify-between text-sm"><span className="flex items-center gap-2"><span className={cn("size-2 rounded-full", color)} />{label}</span><span className="font-mono text-xs text-muted-foreground">{value} · {percentage}%</span></div>
+              <div className="h-2 overflow-hidden rounded-full bg-secondary"><div className={cn("h-full rounded-full transition-[width] duration-700", color)} style={{ width: `${percentage}%` }} /></div>
+            </div> })}
+          </div>
+          {assessments.length === 0 && <p className="mt-8 rounded-xl bg-muted px-4 py-5 text-sm text-muted-foreground">Create your first assessment to start tracking workspace activity.</p>}
+        </article>
+
+        <article className="overflow-hidden rounded-2xl border bg-white">
+          <div className="flex items-center justify-between gap-4 border-b px-5 py-5 sm:px-6"><div><h3 className="font-semibold">Recently updated</h3><p className="mt-1 text-sm text-muted-foreground">Your latest assessment work</p></div><Button size="sm" variant="ghost" asChild><Link to="/admin/assessments">See all <ArrowRight /></Link></Button></div>
+          {recent.length === 0 ? <div className="px-6 py-12 text-center"><p className="text-sm text-muted-foreground">No assessments yet.</p><Button className="mt-4" size="sm" variant="outline" asChild><Link to="/admin/assessments/new">Create assessment</Link></Button></div> : <div className="divide-y">{recent.map((assessment) => <Link key={assessment.id} to={`/admin/assessments/${assessment.id}`} className="group flex items-center gap-3 px-5 py-4 transition-colors hover:bg-muted/70 sm:px-6">
+            <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-secondary"><PanelsTopLeft className="size-4 transition-transform duration-300 group-hover:scale-110" /></span>
+            <div className="min-w-0 flex-1"><p className="truncate text-sm font-semibold">{assessment.name}</p><p className="mt-0.5 text-xs text-muted-foreground">Updated {new Date(assessment.updatedAt).toLocaleDateString()}</p></div>
+            <Badge variant={assessment.status === "PUBLISHED" ? "default" : "secondary"}>{assessment.status}</Badge>
+          </Link>)}</div>}
+        </article>
+      </div>
     </section>
   </div>
 }
