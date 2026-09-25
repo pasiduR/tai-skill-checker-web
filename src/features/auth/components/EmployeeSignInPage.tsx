@@ -41,7 +41,7 @@ export function EmployeeSignInPage() {
           {form.formState.errors.email && <p className="text-sm text-destructive">{form.formState.errors.email.message}</p>}
         </div>
         {signIn.error && <p className="text-sm text-destructive" role="alert">We could not request a sign-in link. Please wait and try again.</p>}
-        <Button size="lg" className="w-full" disabled={signIn.isPending}>{signIn.isPending ? "Sending secure link…" : "Email me a sign-in link"}</Button>
+        <Button size="lg" className="w-full" loading={signIn.isPending}>{signIn.isPending ? "Sending secure link…" : "Email me a sign-in link"}</Button>
       </form>}
     </section>
   </main>

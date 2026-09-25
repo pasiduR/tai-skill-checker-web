@@ -11,9 +11,6 @@ import _admin_evaluations from './admin-evaluations.bones.json'
 import _admin_invite from './admin-invite.bones.json'
 import _admin_live_attempt from './admin-live-attempt.bones.json'
 import _admin_live_attempts from './admin-live-attempts.bones.json'
-import _employee_completed from './employee-completed.bones.json'
-import _employee_home from './employee-home.bones.json'
-import _employee_preparation from './employee-preparation.bones.json'
 import _inline_line from './inline-line.bones.json'
 import _inline_rows from './inline-rows.bones.json'
 import _page_generic from './page-generic.bones.json'
@@ -28,9 +25,6 @@ registerBones({
   "admin-invite": _admin_invite,
   "admin-live-attempt": _admin_live_attempt,
   "admin-live-attempts": _admin_live_attempts,
-  "employee-completed": _employee_completed,
-  "employee-home": _employee_home,
-  "employee-preparation": _employee_preparation,
   "inline-line": _inline_line,
   "inline-rows": _inline_rows,
   "page-generic": _page_generic,

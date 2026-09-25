@@ -1,20 +1,16 @@
 import { CheckCircle2, LockKeyhole } from "@/components/ui/icons"
 import { Navigate, useParams } from "react-router-dom"
-import { ErrorNotice, PageSkeleton } from "@/components/shared/AsyncState"
-import { mockPreparation } from "@/lib/skeletonFixtures"
+import { ErrorNotice } from "@/components/shared/AsyncState"
+import { PageLoader } from "@/components/ui/bars-loader"
 import { useAssignmentPreparation } from "../hooks/useAssignmentPreparation"
 
 export function CompletedPage() {
   const { assignmentId = "" } = useParams()
   const preparation = useAssignmentPreparation(assignmentId)
-  if (preparation.isLoading || preparation.isFetching) return <CompletedSkeleton />
+  if (preparation.isLoading || preparation.isFetching) return <PageLoader />
   if (preparation.error || !preparation.data) return <ErrorNotice message={preparation.error?.message ?? "This assessment is unavailable."} />
   if (preparation.data.status !== "COMPLETED") return <Navigate to={`/assessment/${assignmentId}/prepare`} replace />
   return <CompletedView name={preparation.data.name} />
-}
-
-export function CompletedSkeleton() {
-  return <PageSkeleton name="employee-completed" fixture={<CompletedView name={mockPreparation.name} />} />
 }
 
 function CompletedView({ name }: { name: string }) {

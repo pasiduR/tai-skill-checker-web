@@ -51,7 +51,7 @@ export function SignInPage() {
           <div className="space-y-2"><Label htmlFor="email">Email address</Label><Input id="email" type="email" autoComplete="email" placeholder="you@company.com" {...form.register("email")} />{form.formState.errors.email && <p className="text-sm text-destructive">{form.formState.errors.email.message}</p>}</div>
           <div className="space-y-2"><Label htmlFor="password">Password</Label><Input id="password" type="password" autoComplete="current-password" placeholder="At least 8 characters" {...form.register("password")} />{form.formState.errors.password && <p className="text-sm text-destructive">{form.formState.errors.password.message}</p>}</div>
           {mutation.error && <p className="text-sm text-destructive" role="alert">{mutation.error.message}</p>}
-          <Button size="lg" className="w-full" disabled={mutation.isPending}>{mutation.isPending ? "Signing in…" : "Sign in"}</Button>
+          <Button size="lg" className="w-full" loading={mutation.isPending}>{mutation.isPending ? "Signing in…" : "Sign in"}</Button>
         </form>
       </div>
     </section>

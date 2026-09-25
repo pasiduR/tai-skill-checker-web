@@ -25,7 +25,7 @@ export function MicrophoneCheck({ onReadyChange }: { onReadyChange: (ready: bool
     {ready && <div className="space-y-2"><div className="flex justify-between text-xs"><span>Input level</span><span className="text-muted-foreground">Speak to test</span></div><Progress value={microphone.level} aria-label="Microphone input level" /></div>}
     {microphone.status === "DENIED" && <p className="text-sm text-destructive" role="alert">Microphone access was denied. Allow access in your browser settings, then try again.</p>}
     {microphone.status === "ERROR" && <p className="text-sm text-destructive" role="alert">We could not access a microphone. Check that one is connected and available.</p>}
-    <Button variant={ready ? "outline" : "default"} onClick={() => void run(microphone.selectedDeviceId || undefined)} disabled={microphone.status === "REQUESTING"}>
+    <Button variant={ready ? "outline" : "default"} onClick={() => void run(microphone.selectedDeviceId || undefined)} loading={microphone.status === "REQUESTING"}>
       {ready ? <RefreshCw /> : <Mic />}{microphone.status === "REQUESTING" ? "Checking…" : ready ? "Test again" : "Check microphone"}
     </Button>
   </div>

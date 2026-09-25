@@ -5,7 +5,8 @@ import { CompletedPage, PreparationPage } from "@/features/assignments"
 import { AccessPendingPage, EmployeeHome, EmployeeSignInPage, RequireRole, SignInPage, useAuth } from "@/features/auth"
 import { InvitationEntryPage, InvitePage } from "@/features/invitations"
 import { GenericPageSkeleton } from "@/components/shared/AsyncState"
-import { AdminSkeletonGallery, EmployeeSkeletonGallery } from "./BoneyardGallery"
+import { PageLoader } from "@/components/ui/bars-loader"
+import { AdminSkeletonGallery } from "./BoneyardGallery"
 import { AdminLayout } from "@/layouts/AdminLayout"
 import { EmployeeLayout } from "@/layouts/EmployeeLayout"
 import { homePathForRole } from "@/features/auth/routing"
@@ -42,7 +43,6 @@ export const router = createBrowserRouter([
   { path: "/invitations/:token", element: <InvitationEntryPage /> },
   { path: "/__boneyard", element: <BoneyardCaptureRoute />, children: [
     { element: <AdminLayout />, children: [{ path: "admin", element: <AdminSkeletonGallery /> }] },
-    { element: <EmployeeLayout />, children: [{ path: "employee", element: <EmployeeSkeletonGallery /> }] },
   ] },
   { element: <RequireRole role="ADMIN" />, children: [{ element: <AdminLayout />, children: [
     { path: "/admin", element: <AdminDashboard /> },
@@ -60,7 +60,7 @@ export const router = createBrowserRouter([
   { element: <RequireRole role="EMPLOYEE" />, children: [{ element: <EmployeeLayout />, children: [
     { path: "/employee", element: <EmployeeHome /> },
     { path: "/assessment/:assignmentId/prepare", element: <PreparationPage /> },
-    { path: "/assessment/:assignmentId/session", element: <Suspense fallback={<GenericPageSkeleton />}><AssessmentSessionPage /></Suspense> },
+    { path: "/assessment/:assignmentId/session", element: <Suspense fallback={<PageLoader className="h-dvh text-white" label="Connecting to your session…" />}><AssessmentSessionPage /></Suspense> },
     { path: "/assessment/:assignmentId/completed", element: <CompletedPage /> },
   ] }] },
   { path: "*", element: <NotFound /> },

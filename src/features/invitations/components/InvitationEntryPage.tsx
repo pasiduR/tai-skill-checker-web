@@ -3,7 +3,8 @@ import { ArrowRight, CalendarClock, CheckCircle2, LockKeyhole, LogOut } from "@/
 import { Link, Navigate, useNavigate, useParams, useSearchParams } from "react-router-dom"
 import { queryKeys } from "@/api"
 import { BrandMark } from "@/components/shared/BrandMark"
-import { ErrorNotice, GenericPageSkeleton } from "@/components/shared/AsyncState"
+import { ErrorNotice } from "@/components/shared/AsyncState"
+import { PageLoader } from "@/components/ui/bars-loader"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { signOut, useAuth } from "@/features/auth"
@@ -35,7 +36,7 @@ export function InvitationEntryPage() {
   })
 
   if (!token) return <Navigate to="/" replace />
-  if (auth.isLoading) return <main className="page-shell py-16"><GenericPageSkeleton /></main>
+  if (auth.isLoading) return <main className="page-shell py-16"><PageLoader /></main>
   if (magicLinkError) {
     if (auth.session && auth.role === "EMPLOYEE") return <Navigate to="/employee" replace />
     return <main className="grid min-h-screen place-items-center bg-muted p-6">
@@ -48,7 +49,7 @@ export function InvitationEntryPage() {
       </section>
     </main>
   }
-  if (invitation.isLoading) return <main className="page-shell py-16"><GenericPageSkeleton /></main>
+  if (invitation.isLoading) return <main className="page-shell py-16"><PageLoader label="Opening your invitation…" /></main>
   if (invitation.error || !invitation.data) {
     if (auth.session && auth.role === "EMPLOYEE") return <Navigate to="/employee" replace />
     const expired = "code" in (invitation.error ?? {}) && (invitation.error as { code?: string }).code === "INVITATION_EXPIRED"
@@ -80,9 +81,9 @@ export function InvitationEntryPage() {
             <div className="flex items-start gap-3"><CalendarClock className="mt-0.5 size-5 shrink-0 text-primary" /><p>Invitation expires {new Date(data.expiresAt).toLocaleString()}</p></div>
             <div className="flex items-start gap-3"><LockKeyhole className="mt-0.5 size-5 shrink-0 text-primary" /><p>Your scenarios, evaluator guidance, and results stay private.</p></div>
           </div>
-          {wrongAccount ? <Button size="lg" onClick={() => switchAccount.mutate()} disabled={switchAccount.isPending}>
+          {wrongAccount ? <Button size="lg" onClick={() => switchAccount.mutate()} loading={switchAccount.isPending}>
             <LogOut />{switchAccount.isPending ? "Signing out…" : "Switch account"}
-          </Button> : <Button size="lg" onClick={continueToAssessment} disabled={auth.isLoading || accept.isPending || requestSignIn.isPending || requestSignIn.isSuccess}>
+          </Button> : <Button size="lg" onClick={continueToAssessment} loading={accept.isPending || requestSignIn.isPending} disabled={auth.isLoading || requestSignIn.isSuccess}>
             {accept.isPending ? "Accepting…" : requestSignIn.isPending ? "Sending…" : requestSignIn.isSuccess ? "Link sent" : auth.session ? "Accept invitation" : "Email me a secure sign-in link"}<ArrowRight />
           </Button>}
         </div>

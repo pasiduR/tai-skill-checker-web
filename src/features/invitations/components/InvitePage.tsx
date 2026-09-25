@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { CheckCircle2, Mail, RotateCcw, XCircle } from "@/components/ui/icons"
-import { Link, useParams } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import { queryKeys } from "@/api"
 import { ErrorNotice, InlineSkeleton, PageSkeleton } from "@/components/shared/AsyncState"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
@@ -64,14 +64,14 @@ function InviteView({ assessment, employees }: { assessment: AssessmentSummary; 
   }
 
   return <div className="space-y-8">
-    <PageHeader eyebrow="Employee invitations" title={`Invite to ${assessment.name}`} description="Send invitations, review employee access, and grant a fresh set of attempts when someone needs to try again." actions={<Button variant="outline" asChild><Link to={`/admin/assessments/${id}`}>Back to assessment</Link></Button>} />
+    <PageHeader eyebrow="Employee invitations" title={`Invite to ${assessment.name}`} description="Send invitations, review employee access, and grant a fresh set of attempts when someone needs to try again." />
 
     <Card className="max-w-2xl shadow-none">
       <CardHeader><CardTitle>Email employees</CardTitle><CardDescription>Separate up to 100 addresses with commas or new lines.</CardDescription></CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2"><Label htmlFor="emails">Employee emails</Label><Textarea id="emails" rows={7} value={value} onChange={(event) => setValue(event.target.value)} placeholder={"alex@example.com\nsam@example.com"} /></div>
         {(validationError || invite.error) && <p className="text-sm text-destructive" role="alert">{validationError ?? invite.error?.message}</p>}
-        <Button disabled={invite.isPending || !value.trim()} onClick={send}><Mail />{invite.isPending ? "Sending invitations…" : "Send invitations"}</Button>
+        <Button loading={invite.isPending} disabled={!value.trim()} onClick={send}><Mail />{invite.isPending ? "Sending invitations…" : "Send invitations"}</Button>
       </CardContent>
     </Card>
 
@@ -109,7 +109,7 @@ function InviteView({ assessment, employees }: { assessment: AssessmentSummary; 
       <DialogContent>
         <DialogHeader><DialogTitle>Reinvite employee?</DialogTitle><DialogDescription>A new invitation will be sent to {selected?.email}. Their attempt allowance will reset, while prior attempts and reports stay in the audit history.{selected?.hasActiveAttempt ? " The unfinished session will be ended." : ""}</DialogDescription></DialogHeader>
         {reinvite.error && <ErrorNotice message={reinvite.error.message} />}
-        <DialogFooter><Button variant="outline" disabled={reinvite.isPending} onClick={() => setSelected(undefined)}>Cancel</Button><Button disabled={reinvite.isPending || !selected} onClick={() => selected && reinvite.mutate(selected.invitationId)}><RotateCcw />{reinvite.isPending ? "Reinviting…" : "Reinvite and reset"}</Button></DialogFooter>
+        <DialogFooter><Button variant="outline" disabled={reinvite.isPending} onClick={() => setSelected(undefined)}>Cancel</Button><Button loading={reinvite.isPending} disabled={!selected} onClick={() => selected && reinvite.mutate(selected.invitationId)}><RotateCcw />{reinvite.isPending ? "Reinviting…" : "Reinvite and reset"}</Button></DialogFooter>
       </DialogContent>
     </Dialog>
   </div>

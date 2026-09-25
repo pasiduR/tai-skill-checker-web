@@ -2,14 +2,14 @@ import { useCallback, useState } from "react"
 import { useMutation } from "@tanstack/react-query"
 import { AlertTriangle, ArrowRight, Check, ShieldAlert } from "@/components/ui/icons"
 import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom"
-import { ErrorNotice, PageSkeleton } from "@/components/shared/AsyncState"
+import { ErrorNotice } from "@/components/shared/AsyncState"
+import { PageLoader } from "@/components/ui/bars-loader"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import type { InvitationPreview } from "@/features/invitations/api/invitations"
 import { startAttempt } from "../api/assignments"
 import { useAssignmentPreparation } from "../hooks/useAssignmentPreparation"
-import { mockPreparation } from "@/lib/skeletonFixtures"
 import type { AssignmentPreparation } from "../types"
 import { MicrophoneCheck } from "./MicrophoneCheck"
 
@@ -20,14 +20,10 @@ export function PreparationPage() {
   const invitation = (location.state as { invitation?: InvitationPreview } | null)?.invitation
   const interrupted = Boolean((location.state as { interrupted?: boolean } | null)?.interrupted)
 
-  if (preparation.isLoading || preparation.isFetching) return <PreparationSkeleton />
+  if (preparation.isLoading || preparation.isFetching) return <PageLoader label="Preparing your assessment…" />
   if (preparation.error || !preparation.data) return <ErrorNotice message={preparation.error?.message ?? "This assessment is unavailable."} />
   if (preparation.data.status === "COMPLETED") return <Navigate to={`/assessment/${assignmentId}/completed`} replace />
   return <PreparationView assignmentId={assignmentId} data={preparation.data} invitation={invitation} interrupted={interrupted} />
-}
-
-export function PreparationSkeleton() {
-  return <PageSkeleton name="employee-preparation" fixture={<PreparationView assignmentId="as0" data={mockPreparation} interrupted={false} />} />
 }
 
 function PreparationView({ assignmentId, data, invitation, interrupted }: { assignmentId: string; data: AssignmentPreparation; invitation?: InvitationPreview; interrupted: boolean }) {
@@ -57,7 +53,7 @@ function PreparationView({ assignmentId, data, invitation, interrupted }: { assi
         <Alert><ShieldAlert /><AlertTitle>An attempt starts when you continue</AlertTitle><AlertDescription>If you close this page, disconnect, or end early after starting, the attempt is consumed. Interrupted attempts cannot be resumed. You may start again only while attempts remain.</AlertDescription></Alert>
       </div>
       <div className="space-y-5"><MicrophoneCheck onReadyChange={handleMicrophoneReady} />
-        {unavailable ? <Alert variant="destructive"><AlertTriangle /><AlertTitle>Assessment unavailable</AlertTitle><AlertDescription>{data.attemptsRemaining < 1 ? "You have used all available attempts." : "This assignment cannot be started."}</AlertDescription></Alert> : <Button size="lg" className="w-full" disabled={!microphoneReady || start.isPending} onClick={() => start.mutate()}>{start.isPending ? "Starting secure session…" : "Start assessment"}<ArrowRight /></Button>}
+        {unavailable ? <Alert variant="destructive"><AlertTriangle /><AlertTitle>Assessment unavailable</AlertTitle><AlertDescription>{data.attemptsRemaining < 1 ? "You have used all available attempts." : "This assignment cannot be started."}</AlertDescription></Alert> : <Button size="lg" className="w-full" loading={start.isPending} disabled={!microphoneReady} onClick={() => start.mutate()}>{start.isPending ? "Starting secure session…" : "Start assessment"}<ArrowRight /></Button>}
         {!microphoneReady && !unavailable && <p className="text-center text-xs text-muted-foreground">Complete the microphone check to enable the assessment.</p>}
         {start.error && <ErrorNotice message={start.error.message} />}
       </div>

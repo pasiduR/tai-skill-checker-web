@@ -21,7 +21,7 @@ export function AccessPendingPage() {
       <p className="eyebrow mt-10">No active access</p>
       <h1 className="font-display mt-3 text-4xl leading-tight">Open your invitation link.</h1>
       <p className="mt-5 leading-7 text-muted-foreground">Your email is verified, but no assessment invitation has been accepted. Return to the secure link in your invitation email.</p>
-      <Button className="mt-8" variant="outline" disabled={logout.isPending} onClick={() => logout.mutate()}>
+      <Button className="mt-8" variant="outline" loading={logout.isPending} onClick={() => logout.mutate()}>
         {logout.isPending ? "Signing out…" : "Sign out"}
       </Button>
     </section>

@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { Assessment, Bell, Evaluation, LayoutDashboard, LiveActivity, LogOut, Menu, PanelLeftClose, PanelLeftOpen, Settings, X } from "@/components/ui/icons"
+import { Assessment, Bell, Evaluation, LayoutDashboard, LiveActivity, LogOut, Menu, PanelLeft, Settings, X } from "@/components/ui/icons"
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom"
 import { queryKeys } from "@/api"
 import { BrandMark } from "@/components/shared/BrandMark"
 import { Button } from "@/components/ui/button"
 import { signOut, useAuth } from "@/features/auth"
 import { cn } from "@/lib/utils"
+import { AdminBreadcrumbs } from "./AdminBreadcrumbs"
 
 const navigation = [
   { to: "/admin", label: "Overview", icon: LayoutDashboard, end: true },
@@ -14,17 +15,6 @@ const navigation = [
   { to: "/admin/evaluations", label: "Evaluations", icon: Evaluation },
   { to: "/admin/live", label: "Live attempts", icon: LiveActivity },
 ]
-
-function pageTitle(pathname: string) {
-  if (pathname === "/admin") return "Operations overview"
-  if (pathname.startsWith("/admin/assessments/new")) return "New assessment"
-  if (pathname.startsWith("/admin/assessments")) return "Assessments"
-  if (pathname.startsWith("/admin/evaluations")) return "Evaluations"
-  if (pathname.startsWith("/admin/live")) return "Live attempts"
-  if (pathname.startsWith("/admin/attempts")) return "Attempt report"
-  if (pathname.startsWith("/admin/settings")) return "Voice agent settings"
-  return "Admin workspace"
-}
 
 export function AdminLayout() {
   const auth = useAuth()
@@ -67,9 +57,9 @@ export function AdminLayout() {
       <div className={cn("mt-3 flex items-center gap-2 border-t pt-4", sidebarCollapsed && !mobile ? "justify-center" : "px-2")}>
         <span className="grid size-9 shrink-0 place-items-center rounded-full bg-secondary text-xs font-semibold">{user?.name?.slice(0, 1).toUpperCase() ?? "A"}</span>
         {(!sidebarCollapsed || mobile) && <div className="min-w-0 flex-1"><p className="truncate text-sm font-medium">{user?.name || "Administrator"}</p><p className="truncate text-xs text-muted-foreground">{user?.email}</p></div>}
-        <Button className={cn(sidebarCollapsed && !mobile && "hidden")} size="icon" variant="ghost" aria-label="Sign out" title="Sign out" disabled={logout.isPending} onClick={() => logout.mutate()}><LogOut /></Button>
+        <Button className={cn(sidebarCollapsed && !mobile && "hidden")} size="icon" variant="ghost" aria-label="Sign out" title="Sign out" loading={logout.isPending} onClick={() => logout.mutate()}><LogOut /></Button>
       </div>
-      {sidebarCollapsed && !mobile && <Button className="mt-2 w-full px-0" size="icon" variant="ghost" aria-label="Sign out" title="Sign out" disabled={logout.isPending} onClick={() => logout.mutate()}><LogOut /></Button>}
+      {sidebarCollapsed && !mobile && <Button className="mt-2 w-full px-0" size="icon" variant="ghost" aria-label="Sign out" title="Sign out" loading={logout.isPending} onClick={() => logout.mutate()}><LogOut /></Button>}
     </div>
   </>
 
@@ -81,10 +71,10 @@ export function AdminLayout() {
         <header className="sticky top-0 z-20 border-b bg-white/95 backdrop-blur md:rounded-tl-2xl">
           <div className="flex h-[64px] items-center gap-3 px-4 sm:px-6 lg:px-8">
             <Button className="md:hidden" size="icon" variant="ghost" aria-label="Open navigation" onClick={() => setMobileNavigationOpen(true)}><Menu /></Button>
-            <Button className="hidden md:inline-flex" size="icon" variant="ghost" aria-label={sidebarCollapsed ? "Expand navigation" : "Collapse navigation"} onClick={() => setSidebarCollapsed((value) => !value)}>{sidebarCollapsed ? <PanelLeftOpen /> : <PanelLeftClose />}</Button>
+            <Button className="hidden md:inline-flex" size="icon" variant="ghost" aria-label={sidebarCollapsed ? "Expand navigation" : "Collapse navigation"} aria-expanded={!sidebarCollapsed} onClick={() => setSidebarCollapsed((value) => !value)}><PanelLeft className="!size-5" /></Button>
             <div className="h-6 w-px bg-border" aria-hidden="true" />
-            <p className="min-w-0 truncate text-sm font-medium">{pageTitle(location.pathname)}</p>
-            <Button className="ml-auto" size="icon" variant="ghost" aria-label="Notifications" title="Notifications"><Bell /></Button>
+            <AdminBreadcrumbs />
+            <Button className="shrink-0" size="icon" variant="ghost" aria-label="Notifications" title="Notifications"><Bell /></Button>
           </div>
         </header>
         <main className="min-w-0 overflow-x-hidden px-4 py-7 sm:px-6 sm:py-9 lg:px-8 lg:py-10"><div className="workspace-page"><Outlet /></div></main>

@@ -1,5 +1,5 @@
 import { useConnectionState, useVoiceAssistant, LiveKitRoom, RoomAudioRenderer } from "@livekit/components-react"
-import { ArrowLeft, Headphones, LiveConnection, Volume2 } from "@/components/ui/icons"
+import { Headphones, LiveConnection, Volume2 } from "@/components/ui/icons"
 import { ConnectionState } from "livekit-client"
 import { Link, useParams } from "react-router-dom"
 import { ErrorNotice, InlineSkeleton, PageSkeleton } from "@/components/shared/AsyncState"
@@ -53,7 +53,7 @@ function LiveAttemptView({ attemptId, data, employee, observer }: LiveAttemptVie
   const scenario = data.scenarios.find((item) => item.id === data.attempt.currentScenarioId)
 
   return <div className="space-y-8">
-    <div><Button variant="ghost" asChild><Link to="/admin/live"><ArrowLeft />Back to live attempts</Link></Button><div className="mt-5 flex flex-col gap-5 border-b pb-8 lg:flex-row lg:items-end lg:justify-between"><div><p className="eyebrow">Listen only inspection</p><h1 className="font-display mt-2 text-4xl leading-tight sm:text-5xl">{employee?.employeeName || employee?.employeeEmail || "Live attempt"}</h1><p className="mt-3 text-muted-foreground">{data.assessment.name}</p></div>{!isActive && <Button asChild><Link to={`/admin/attempts/${attemptId}`}>Open report</Link></Button>}</div></div>
+    <div><div className="flex flex-col gap-5 border-b pb-8 lg:flex-row lg:items-end lg:justify-between"><div><p className="eyebrow">Listen only inspection</p><h1 className="font-display mt-2 text-4xl leading-tight sm:text-5xl">{employee?.employeeName || employee?.employeeEmail || "Live attempt"}</h1><p className="mt-3 text-muted-foreground">{data.assessment.name}</p></div>{!isActive && <Button asChild><Link to={`/admin/attempts/${attemptId}`}>Open report</Link></Button>}</div></div>
     <Alert><Headphones /><AlertTitle>Your microphone is off</AlertTitle><AlertDescription>This observer connection can receive audio only. It cannot publish microphone, camera, or data.</AlertDescription></Alert>
     <div className="grid gap-6 xl:grid-cols-[0.8fr_1.2fr]">
       <div className="space-y-6"><Card className="bg-surface-dark text-white"><CardHeader><div className="flex items-center justify-between"><CardTitle>Session state</CardTitle><LiveConnection className="size-5 text-primary" /></div></CardHeader><CardContent className="space-y-6"><div><p className="text-xs text-[#a8acb3]">Current scenario</p><p className="mt-2 text-lg">{scenario?.title ?? (isActive ? "Transitioning between scenarios" : "Assessment ended")}</p></div><div className="border-t border-white/10 pt-5"><p className="text-xs text-[#a8acb3]">Live audio</p><div className="mt-3">

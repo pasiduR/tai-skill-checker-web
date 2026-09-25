@@ -1,7 +1,6 @@
 // Mock data rendered through the real page views so `npm run bones` captures skeletons that match the UI.
 // Keep the amount of content close to what a typical workspace shows — it determines bone count and height.
 import type { Assessment, AssessmentSummary } from "@/features/assessments/types"
-import type { EmployeeAssignmentSummary, AssignmentPreparation } from "@/features/assignments/types"
 import type { ActiveAttempt, AttemptInspection } from "@/features/attempts/types"
 import type { EvaluationListItem } from "@/features/evaluations/types"
 import type { EmployeeInvitation } from "@/features/invitations/api/invitations"
@@ -65,17 +64,6 @@ export const mockInspection: AttemptInspection = {
       { id: "cs2", competencyId: "c2", competencyName: "Clarity", score: 4, maxScore: 5, reasoning: "Explained options in plain language.", evidence: [{ id: "ev2", attemptTurnId: "turn2", reason: "Set out the refund and replacement options clearly." }] },
     ],
   },
-}
-
-export const mockEmployeeAssignments: EmployeeAssignmentSummary[] = mockAssessments.slice(0, 2).map((assessment, index) => ({
-  assignmentId: `as${index}`, status: "READY", assessmentId: assessment.id, name: assessment.name, description: assessment.description,
-  updatedAt: now, attemptsUsed: 0, attemptsRemaining: 3, latestAttemptStatus: null, hasActiveAttempt: false,
-}))
-
-export const mockPreparation: AssignmentPreparation = {
-  assignmentId: "as0", status: "READY", assessmentId: "a1", assessmentVersionId: "v2", name: mockAssessment.name, description: mockAssessment.description,
-  preparationInstructions: mockAssessment.preparationInstructions, competencies: mockAssessment.competencies.map(({ name, description }) => ({ name, description })),
-  attemptsUsed: 0, attemptsRemaining: 3,
 }
 
 export const mockEmployeeInvitations: EmployeeInvitation[] = [1, 2, 3].map((item) => ({

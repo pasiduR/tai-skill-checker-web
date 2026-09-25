@@ -16,6 +16,6 @@ export function OverviewForm({ initial, submitLabel, pending, error, onSubmit }:
     <div className="space-y-2"><Label htmlFor="description">Description</Label><Textarea id="description" rows={5} {...form.register("description")} />{form.formState.errors.description && <p className="text-sm text-destructive">{form.formState.errors.description.message}</p>}</div>
     <div className="space-y-2"><Label htmlFor="preparation">Preparation instructions</Label><Textarea id="preparation" rows={5} placeholder="What should employees know before they begin?" {...form.register("preparationInstructions")} /></div>
     {error && <p className="text-sm text-destructive" role="alert">{error}</p>}
-    <Button disabled={pending}>{pending ? "Saving…" : submitLabel}</Button>
+    <Button loading={pending}>{pending ? "Saving…" : submitLabel}</Button>
   </form>
 }

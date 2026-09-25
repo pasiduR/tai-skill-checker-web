@@ -1,17 +1,18 @@
 import { useQuery } from "@tanstack/react-query"
-import { ArrowRight, CheckCircle2, Clock3, RotateCcw } from "@/components/ui/icons"
+import { ArrowRight, CheckCircle2, Clock3, Mail, RotateCcw } from "@/components/ui/icons"
 import { Link } from "react-router-dom"
 import { queryKeys } from "@/api"
-import { EmptyState, ErrorNotice, PageSkeleton } from "@/components/shared/AsyncState"
+import { EmptyState, ErrorNotice } from "@/components/shared/AsyncState"
+import { PageLoader } from "@/components/ui/bars-loader"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { listEmployeeAssignments, type EmployeeAssignmentSummary } from "@/features/assignments"
-import { mockEmployeeAssignments } from "@/lib/skeletonFixtures"
 
 function assignmentState(assignment: EmployeeAssignmentSummary) {
   if (assignment.status === "COMPLETED") return { label: "Completed", icon: CheckCircle2 }
   if (assignment.status === "EXPIRED") return { label: "Expired", icon: Clock3 }
+  if (assignment.status === "PENDING") return { label: "Invitation pending", icon: Mail }
   if (assignment.hasActiveAttempt) return { label: "In progress", icon: Clock3 }
   if (assignment.attemptsRemaining < 1) return { label: "No attempts remaining", icon: Clock3 }
   if (assignment.latestAttemptStatus === "ABANDONED") return { label: "Ready to try again", icon: RotateCcw }
@@ -21,14 +22,10 @@ function assignmentState(assignment: EmployeeAssignmentSummary) {
 export function EmployeeHome() {
   const assignments = useQuery({ queryKey: queryKeys.employeeAssignments, queryFn: listEmployeeAssignments })
 
-  if (assignments.isLoading) return <EmployeeHomeSkeleton />
+  if (assignments.isLoading) return <PageLoader label="Loading your assessments…" />
   if (assignments.error) return <ErrorNotice message="Your assessments could not be loaded." />
   if (!assignments.data?.length) return <EmptyState title="No assessments yet" description="Accepted assessment invitations will appear here." />
   return <EmployeeHomeView assignments={assignments.data} />
-}
-
-export function EmployeeHomeSkeleton() {
-  return <PageSkeleton name="employee-home" fixture={<EmployeeHomeView assignments={mockEmployeeAssignments} />} />
 }
 
 function EmployeeHomeView({ assignments }: { assignments: EmployeeAssignmentSummary[] }) {
@@ -54,6 +51,8 @@ function EmployeeHomeView({ assignments }: { assignments: EmployeeAssignmentSumm
             <p className="text-sm leading-6 text-muted-foreground">{assignment.description}</p>
             {assignment.status === "COMPLETED"
               ? <p className="text-sm font-medium">Submitted successfully</p>
+              : assignment.status === "PENDING"
+              ? <p className="rounded-xl bg-muted px-3.5 py-3 text-sm leading-6">A new invitation was sent to your email. Open the link in that email to unlock this assessment.</p>
               : <p className="text-sm"><span className="font-mono font-semibold">{assignment.attemptsRemaining}</span> attempt{assignment.attemptsRemaining === 1 ? "" : "s"} remaining</p>}
           </CardContent>
           {canStart && <CardFooter><Button asChild><Link to={`/assessment/${assignment.assignmentId}/prepare`}>{assignment.latestAttemptStatus === "ABANDONED" ? "Try again" : "Prepare assessment"}<ArrowRight /></Link></Button></CardFooter>}

@@ -1,6 +1,6 @@
 {
   "url": "http://localhost:5173",
-  "routes": ["/__boneyard/admin", "/__boneyard/employee"],
+  "routes": ["/__boneyard/admin"],
   "breakpoints": [375, 768, 1280, 1536],
   "out": "./src/bones",
   "wait": 800

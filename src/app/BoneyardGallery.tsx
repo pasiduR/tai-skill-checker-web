@@ -3,16 +3,13 @@ import { AdminDashboardSkeleton } from "@/features/assessments/components/AdminD
 import { AssessmentDetailSkeleton } from "@/features/assessments/components/AssessmentDetailPage"
 import { AssessmentEditorSkeleton } from "@/features/assessments/components/AssessmentEditorPage"
 import { AssessmentsSkeleton } from "@/features/assessments/components/AssessmentsPage"
-import { CompletedSkeleton } from "@/features/assignments/components/CompletedPage"
-import { PreparationSkeleton } from "@/features/assignments/components/PreparationPage"
-import { EmployeeHomeSkeleton } from "@/features/auth/components/EmployeeHome"
 import { EvaluationsSkeleton } from "@/features/evaluations/components/EvaluationsPage"
 import { InviteSkeleton } from "@/features/invitations/components/InvitePage"
 import { LiveAttemptSkeleton } from "@/features/liveInspection/components/LiveAttemptPage"
 import { LiveAttemptsSkeleton } from "@/features/liveInspection/components/LiveAttemptsPage"
 import { AttemptReportSkeleton } from "@/features/reports/components/AttemptReportPage"
 
-// Rendered at /__boneyard/admin and /__boneyard/employee inside the real layouts, so each skeleton
+// Rendered at /__boneyard/admin inside the real layout, so each skeleton
 // is captured at the same width it occupies in the app. Add new page skeletons here.
 export function AdminSkeletonGallery() {
   return <div className="space-y-24">
@@ -28,13 +25,5 @@ export function AdminSkeletonGallery() {
     <GenericPageSkeleton />
     <InlineSkeleton variant="line" />
     <InlineSkeleton variant="rows" />
-  </div>
-}
-
-export function EmployeeSkeletonGallery() {
-  return <div className="space-y-24">
-    <EmployeeHomeSkeleton />
-    <PreparationSkeleton />
-    <CompletedSkeleton />
   </div>
 }

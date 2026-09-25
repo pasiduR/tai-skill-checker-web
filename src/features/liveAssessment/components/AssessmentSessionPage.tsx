@@ -102,7 +102,7 @@ function SessionRoom({ assignmentId, attemptId, assessmentTitle, failed }: { ass
     </main>
 
     <footer className="flex shrink-0 items-center justify-center border-t border-white/10 bg-[#0a0b0d]/95 px-4 py-3 backdrop-blur sm:px-6">
-      <div className="flex w-full max-w-xl items-center justify-between gap-3"><Button variant="secondary" onClick={() => void localParticipant.setMicrophoneEnabled(!isMicrophoneEnabled)} disabled={ending}>{isMicrophoneEnabled ? <Mic /> : <MicOff />}{isMicrophoneEnabled ? "Mute" : "Unmute"}</Button><div className="hidden items-center gap-2 text-xs text-[#7c828a] sm:flex"><ShieldCheck className="size-4" />Secure assessment session</div><Button variant="destructive" onClick={() => void end()} disabled={ending}><PhoneOff />{ending ? "Ending…" : "End interview"}</Button></div>
+      <div className="flex w-full max-w-xl items-center justify-between gap-3"><Button variant="secondary" onClick={() => void localParticipant.setMicrophoneEnabled(!isMicrophoneEnabled)} disabled={ending}>{isMicrophoneEnabled ? <Mic /> : <MicOff />}{isMicrophoneEnabled ? "Mute" : "Unmute"}</Button><div className="hidden items-center gap-2 text-xs text-[#7c828a] sm:flex"><ShieldCheck className="size-4" />Secure assessment session</div><Button variant="destructive" onClick={() => void end()} loading={ending}><PhoneOff />{ending ? "Ending…" : "End interview"}</Button></div>
     </footer>
     <RoomAudioRenderer />
   </div>

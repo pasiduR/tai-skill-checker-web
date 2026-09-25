@@ -30,7 +30,7 @@ function TestRoom({ ending, onEnd }: { ending: boolean; onEnd: () => void }) {
     </div>
     <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-4">
       <Button variant="secondary" disabled={!connected || ending} onClick={() => void localParticipant.setMicrophoneEnabled(!isMicrophoneEnabled)}>{isMicrophoneEnabled ? <Mic /> : <MicOff />}{isMicrophoneEnabled ? 'Mute' : 'Unmute'}</Button>
-      <div className="flex items-center gap-2"><Button className="border-white/20 bg-transparent text-white hover:bg-white/10 hover:text-white" variant="outline" disabled={!connected || ending || previewingEnding} onClick={() => { setPreviewingEnding(true); void localParticipant.sendText('Finish this preview now and say the configured closing message.', { topic: 'lk.chat' }).finally(() => setPreviewingEnding(false)) }}>{previewingEnding ? 'Requesting…' : 'Preview ending'}</Button><Button variant="destructive" disabled={ending} onClick={onEnd}><PhoneOff />{ending ? 'Ending…' : 'End test'}</Button></div>
+      <div className="flex items-center gap-2"><Button className="border-white/20 bg-transparent text-white hover:bg-white/10 hover:text-white" variant="outline" loading={previewingEnding} disabled={!connected || ending} onClick={() => { setPreviewingEnding(true); void localParticipant.sendText('Finish this preview now and say the configured closing message.', { topic: 'lk.chat' }).finally(() => setPreviewingEnding(false)) }}>{previewingEnding ? 'Requesting…' : 'Preview ending'}</Button><Button variant="destructive" loading={ending} onClick={onEnd}><PhoneOff />{ending ? 'Ending…' : 'End test'}</Button></div>
     </div>
     <RoomAudioRenderer />
   </div>
