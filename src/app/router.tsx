@@ -4,7 +4,7 @@ import { AdminDashboard, AssessmentDetailPage, AssessmentEditorPage, Assessments
 import { CompletedPage, PreparationPage } from "@/features/assignments"
 import { AccessPendingPage, EmployeeHome, EmployeeSignInPage, RequireRole, SignInPage, useAuth } from "@/features/auth"
 import { InvitationEntryPage, InvitePage } from "@/features/invitations"
-import { GenericPageSkeleton } from "@/components/shared/AsyncState"
+import { AppLoader } from "@/components/shared/AppLoader"
 import { PageLoader } from "@/components/ui/bars-loader"
 import { AdminSkeletonGallery } from "./BoneyardGallery"
 import { AdminLayout } from "@/layouts/AdminLayout"
@@ -20,7 +20,7 @@ const AssessmentSessionPage = lazy(() => import("@/features/liveAssessment").the
 
 function HomeRedirect() {
   const auth = useAuth()
-  if (auth.isLoading) return <main className="p-8"><GenericPageSkeleton /></main>
+  if (auth.isLoading) return <AppLoader />
   if (!auth.session) return <Navigate to="/admin/sign-in" replace />
   return <Navigate to={homePathForRole(auth.role)} replace />
 }
