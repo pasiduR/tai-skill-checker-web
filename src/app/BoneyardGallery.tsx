@@ -16,6 +16,7 @@ export function AdminSkeletonGallery() {
     <AdminDashboardSkeleton />
     <AssessmentsSkeleton />
     <AssessmentDetailSkeleton />
+    <AssessmentDetailSkeleton showCover />
     <AssessmentEditorSkeleton />
     <InviteSkeleton />
     <EvaluationsSkeleton />
