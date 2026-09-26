@@ -6,6 +6,7 @@ import { Navigate, useLocation, useNavigate } from "react-router-dom"
 import { z } from "zod"
 import { queryKeys } from "@/api"
 import { BrandMark } from "@/components/shared/BrandMark"
+import { FieldError } from "@/components/shared/FieldError"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -27,6 +28,8 @@ export function SignInPage() {
     const destination = (location.state as { from?: string } | null)?.from ?? "/admin"
     navigate(destination, { replace: true })
   } })
+  const emailError = form.formState.errors.email?.message
+  const passwordError = form.formState.errors.password?.message
   if (auth.session && auth.role) return <Navigate to={homePathForRole(auth.role)} replace />
   return <main className="grid min-h-screen bg-[#0a0b0d] lg:grid-cols-[1.08fr_0.92fr]">
     <section className="relative hidden min-h-screen overflow-hidden p-12 lg:flex lg:flex-col lg:justify-between xl:p-16">
@@ -48,8 +51,8 @@ export function SignInPage() {
         <h2 className="font-display mt-3 text-4xl leading-tight sm:text-5xl">Welcome back.</h2>
         <p className="mt-4 text-base leading-7 text-muted-foreground">Sign in with the administrator credentials configured for this workspace.</p>
         <form className="mt-10 space-y-6" onSubmit={form.handleSubmit((values) => mutation.mutate(values))}>
-          <div className="space-y-2"><Label htmlFor="email">Email address</Label><Input id="email" type="email" autoComplete="email" placeholder="you@company.com" {...form.register("email")} />{form.formState.errors.email && <p className="text-sm text-destructive">{form.formState.errors.email.message}</p>}</div>
-          <div className="space-y-2"><Label htmlFor="password">Password</Label><Input id="password" type="password" autoComplete="current-password" placeholder="At least 8 characters" {...form.register("password")} />{form.formState.errors.password && <p className="text-sm text-destructive">{form.formState.errors.password.message}</p>}</div>
+          <div className="space-y-2"><Label htmlFor="email">Email address</Label><Input id="email" type="email" autoComplete="email" placeholder="you@company.com" aria-invalid={Boolean(emailError)} aria-describedby={emailError ? "email-error" : undefined} {...form.register("email")} /><FieldError id="email-error" message={emailError} /></div>
+          <div className="space-y-2"><Label htmlFor="password">Password</Label><Input id="password" type="password" autoComplete="current-password" placeholder="At least 8 characters" aria-invalid={Boolean(passwordError)} aria-describedby={passwordError ? "password-error" : undefined} {...form.register("password")} /><FieldError id="password-error" message={passwordError} /></div>
           {mutation.error && <p className="text-sm text-destructive" role="alert">{mutation.error.message}</p>}
           <Button size="lg" className="w-full" loading={mutation.isPending}>{mutation.isPending ? "Signing in…" : "Sign in"}</Button>
         </form>

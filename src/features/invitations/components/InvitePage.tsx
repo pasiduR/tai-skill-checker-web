@@ -4,6 +4,7 @@ import { CheckCircle2, Mail, RotateCcw, XCircle } from "@/components/ui/icons"
 import { useParams } from "react-router-dom"
 import { queryKeys } from "@/api"
 import { ErrorNotice, InlineSkeleton, PageSkeleton } from "@/components/shared/AsyncState"
+import { FieldError } from "@/components/shared/FieldError"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -69,8 +70,8 @@ function InviteView({ assessment, employees }: { assessment: AssessmentSummary; 
     <Card className="max-w-2xl shadow-none">
       <CardHeader><CardTitle>Email employees</CardTitle><CardDescription>Separate up to 100 addresses with commas or new lines.</CardDescription></CardHeader>
       <CardContent className="space-y-4">
-        <div className="space-y-2"><Label htmlFor="emails">Employee emails</Label><Textarea id="emails" rows={7} value={value} onChange={(event) => setValue(event.target.value)} placeholder={"alex@example.com\nsam@example.com"} /></div>
-        {(validationError || invite.error) && <p className="text-sm text-destructive" role="alert">{validationError ?? invite.error?.message}</p>}
+        <div className="space-y-2"><Label htmlFor="emails">Employee emails</Label><Textarea id="emails" rows={7} value={value} aria-invalid={Boolean(validationError)} aria-describedby={validationError ? "emails-error" : undefined} onChange={(event) => { setValue(event.target.value); setValidationError(undefined) }} placeholder={"alex@example.com\nsam@example.com"} /><FieldError id="emails-error" message={validationError} /></div>
+        {invite.error && <p className="text-sm text-destructive" role="alert">{invite.error.message}</p>}
         <Button loading={invite.isPending} disabled={!value.trim()} onClick={send}><Mail />{invite.isPending ? "Sending invitations…" : "Send invitations"}</Button>
       </CardContent>
     </Card>

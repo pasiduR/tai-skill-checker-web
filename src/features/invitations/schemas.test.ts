@@ -9,4 +9,9 @@ describe("emailsSchema", () => {
   it("rejects invalid input", () => {
     expect(emailsSchema.safeParse("not-an-email").success).toBe(false)
   })
+
+  it("returns a user-facing limit for more than 100 addresses", () => {
+    const input = Array.from({ length: 101 }, (_, index) => `person${index}@example.com`).join("\n")
+    expect(emailsSchema.safeParse(input).error?.issues[0]?.message).toBe("You can invite up to 100 employees at a time.")
+  })
 })

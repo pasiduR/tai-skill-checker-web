@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form"
 import { Navigate, useSearchParams } from "react-router-dom"
 import { z } from "zod"
 import { BrandMark } from "@/components/shared/BrandMark"
+import { FieldError } from "@/components/shared/FieldError"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -21,6 +22,7 @@ export function EmployeeSignInPage() {
   const [searchParams] = useSearchParams()
   const form = useForm<Values>({ resolver: zodResolver(schema), defaultValues: { email: "" } })
   const signIn = useMutation({ mutationFn: requestEmployeeSignIn })
+  const emailError = form.formState.errors.email?.message
 
   if (auth.session && auth.role) return <Navigate to={homePathForRole(auth.role)} replace />
 
@@ -37,8 +39,8 @@ export function EmployeeSignInPage() {
       {signIn.isSuccess ? <Alert className="mt-8"><Mail /><AlertTitle>Check your inbox</AlertTitle><AlertDescription>If this email has employee access, a secure sign-in link is on its way. The link expires shortly.</AlertDescription></Alert> : <form className="mt-8 space-y-5" onSubmit={form.handleSubmit((values) => signIn.mutate(values))}>
         <div className="space-y-2">
           <Label htmlFor="employee-email">Email address</Label>
-          <Input id="employee-email" type="email" autoComplete="email" placeholder="you@company.com" {...form.register("email")} />
-          {form.formState.errors.email && <p className="text-sm text-destructive">{form.formState.errors.email.message}</p>}
+          <Input id="employee-email" type="email" autoComplete="email" placeholder="you@company.com" aria-invalid={Boolean(emailError)} aria-describedby={emailError ? "employee-email-error" : undefined} {...form.register("email")} />
+          <FieldError id="employee-email-error" message={emailError} />
         </div>
         {signIn.error && <p className="text-sm text-destructive" role="alert">We could not request a sign-in link. Please wait and try again.</p>}
         <Button size="lg" className="w-full" loading={signIn.isPending}>{signIn.isPending ? "Sending secure link…" : "Email me a sign-in link"}</Button>
