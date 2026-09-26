@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { Assessment, Bell, Evaluation, LayoutDashboard, LiveActivity, LogOut, Menu, PanelLeft, Settings, X } from "@/components/ui/icons"
+import { Assessment, Bell, BookOpen, Evaluation, LayoutDashboard, LiveActivity, LogOut, Menu, PanelLeft, Settings, X } from "@/components/ui/icons"
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom"
 import { queryKeys } from "@/api"
 import { BrandMark } from "@/components/shared/BrandMark"
@@ -53,6 +53,7 @@ export function AdminLayout() {
       </nav>
     </div>
     <div className={cn("border-t py-4", sidebarCollapsed && !mobile ? "px-2" : "px-4")}>
+      <NavLink to="/admin/docs" className={navClass} title={sidebarCollapsed && !mobile ? "User manual" : undefined}><BookOpen className="size-[18px]" /><span className={cn(sidebarCollapsed && !mobile && "md:sr-only")}>User manual</span></NavLink>
       <NavLink to="/admin/settings" className={navClass} title={sidebarCollapsed && !mobile ? "Settings" : undefined}><Settings className="size-[18px]" /><span className={cn(sidebarCollapsed && !mobile && "md:sr-only")}>Settings</span></NavLink>
       <div className={cn("mt-3 flex items-center gap-2 border-t pt-4", sidebarCollapsed && !mobile ? "justify-center" : "px-2")}>
         <span className="grid size-9 shrink-0 place-items-center rounded-full bg-secondary text-xs font-semibold">{user?.name?.slice(0, 1).toUpperCase() ?? "A"}</span>

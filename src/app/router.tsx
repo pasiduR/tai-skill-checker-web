@@ -14,6 +14,7 @@ import { LiveAttemptPage, LiveAttemptsPage } from "@/features/liveInspection"
 import { AttemptReportPage } from "@/features/reports"
 import { EvaluationsPage } from "@/features/evaluations"
 import { AgentSettingsPage } from "@/features/agentSettings"
+import { UserManualPage } from "@/features/docs"
 
 const AssessmentSessionPage = lazy(() => import("@/features/liveAssessment").then((module) => ({ default: module.AssessmentSessionPage })))
 
@@ -56,7 +57,7 @@ export const router = createBrowserRouter([
     { path: "/admin/live/:attemptId", element: <LiveAttemptPage /> },
     { path: "/admin/attempts/:attemptId", element: <AttemptReportPage /> },
     { path: "/admin/settings", element: <AgentSettingsPage /> },
-  ] }] },
+  ] }, { path: "/admin/docs", element: <UserManualPage /> }] },
   { element: <RequireRole role="EMPLOYEE" />, children: [{ element: <EmployeeLayout />, children: [
     { path: "/employee", element: <EmployeeHome /> },
     { path: "/assessment/:assignmentId/prepare", element: <PreparationPage /> },

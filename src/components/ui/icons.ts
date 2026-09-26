@@ -8,6 +8,7 @@ export {
   AudioLines as VoiceActivity,
   AudioLines as LiveActivity,
   Bell,
+  BookOpen,
   CalendarClock,
   Check,
   ChevronRight,
